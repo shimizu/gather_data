@@ -1,0 +1,68 @@
+source:
+  id: geoboundaries
+  name: geoBoundaries
+  url: https://www.geoboundaries.org/
+  description: 世界各国の政治・行政境界線のオープンデータベース。200以上の国・地域の約100万の境界線を2016年から追跡している。
+  provider: William & Mary geoLab とコミュニティ
+  category: academic
+  formats:
+    - geojson
+    - shapefile
+    - topojson
+    - png
+datasets:
+  - id: geoboundaries_administrative
+    name: Political Administrative Boundaries
+    description: 世界各国の政治・行政境界線データ。国境（ADM0）から第5レベルの行政区画（ADM5）まで提供。CC BY 4.0ライセンス。
+    tags:
+      - 境界線
+      - 行政区画
+      - 地理
+      - GIS
+      - 政治
+      - 世界
+    url: https://www.geoboundaries.org/api/current/gbOpen/ALL/ALL/
+    last_confirmed: 2024-12-28
+    access_method: api
+    notes: API経由でJSON形式のメタデータと各種フォーマット（GeoJSON、Shapefile、TopoJSON）のダウンロードリンクを取得可能。3文字のISO国コードと境界レベル（ADM0-ADM5）を指定。
+  - id: geoboundaries_humanitarian
+    name: Humanitarian Boundaries
+    description: UN OCHAからミラーされた人道支援用境界線データ。より制限的なライセンスの場合あり。
+    tags:
+      - 境界線
+      - 人道支援
+      - 国連
+      - OCHA
+      - 地理
+      - GIS
+    url: https://www.geoboundaries.org/api/current/gbHumanitarian/ALL/ALL/
+    last_confirmed: 2024-12-28
+    access_method: api
+    notes: UN OCHA提供データ。ライセンスはより制限的な場合がある。
+  - id: geoboundaries_authoritative
+    name: Authoritative Boundaries
+    description: UN SALBからミラーされた権威的境界線データ。各国プロセスで検証済み。商用利用不可。
+    tags:
+      - 境界線
+      - 権威的
+      - 国連
+      - SALB
+      - 地理
+      - GIS
+    url: https://www.geoboundaries.org/api/current/gbAuthoritative/ALL/ALL/
+    last_confirmed: 2024-12-28
+    access_method: api
+    notes: UN SALB提供の検証済みデータ。商用利用不可。
+  - id: geoboundaries_archives
+    name: geoBoundaries Archives
+    description: 過去のバージョンのgeoBoundariesデータアーカイブ。研究の再現性確保のために年次リリースを提供。
+    tags:
+      - アーカイブ
+      - バージョン管理
+      - 研究
+      - 再現性
+      - 境界線
+    url: https://github.com/wmgeolab/geoBoundaries
+    last_confirmed: 2024-12-28
+    access_method: download
+    notes: GitHubでホスト。最新版v5.0.0（2022年12月）からv1.3.3（2018年8月）まで利用可能。
