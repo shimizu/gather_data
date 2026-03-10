@@ -89,8 +89,78 @@ describe("getCatalogStats", () => {
   });
 });
 
+describe("registerEntry (更新)", () => {
+  it("既存データセットの更新がFTS検索に反映される", () => {
+    const updatedEntry: CatalogEntry = {
+      source: { ...sampleEntry.source },
+      datasets: [
+        {
+          id: "population",
+          name: "更新された人口データ",
+          description: "全国の最新人口統計",
+          tags: ["人口", "全国", "最新"],
+          url: "https://example.com/population-v2",
+          last_confirmed: "2026-03-10",
+          access_method: "api",
+        },
+      ],
+    };
+    registerEntry(updatedEntry, { skipYaml: true });
+
+    // 新しいタグで検索できる (FTS が更新されている証拠)
+    const tagResults = searchCatalog("最新");
+    expect(tagResults.length).toBeGreaterThan(0);
+    expect(tagResults[0].dataset.id).toBe("population");
+    expect(tagResults[0].dataset.name).toBe("更新された人口データ");
+
+    // 更新後の説明で検索できる
+    const descResults = searchCatalog("全国");
+    expect(descResults.length).toBeGreaterThan(0);
+    expect(descResults[0].dataset.id).toBe("population");
+  });
+
+  it("カテゴリ変更後もソースが重複しない", () => {
+    const changedCategory: CatalogEntry = {
+      source: {
+        ...sampleEntry.source,
+        category: "international",
+      },
+      datasets: sampleEntry.datasets,
+    };
+    registerEntry(changedCategory, { skipYaml: true });
+
+    // SQLite 上でソースが1件のみであること
+    const stats = getCatalogStats();
+    expect(stats.sources).toBe(1);
+    expect(stats.categories).toHaveProperty("international");
+    expect(stats.categories).not.toHaveProperty("government");
+
+    // 元に戻す
+    registerEntry(sampleEntry, { skipYaml: true });
+  });
+
+  it("既存ソース情報の更新が反映される", () => {
+    const updatedEntry: CatalogEntry = {
+      source: {
+        ...sampleEntry.source,
+        name: "更新されたソース名",
+        description: "更新された説明",
+      },
+      datasets: sampleEntry.datasets,
+    };
+    registerEntry(updatedEntry, { skipYaml: true });
+
+    const detail = getSourceDetail("test_source");
+    expect(detail).not.toBeNull();
+    expect(detail!.source.name).toBe("更新されたソース名");
+    expect(detail!.source.description).toBe("更新された説明");
+  });
+});
+
 describe("getSourceDetail", () => {
   it("ソースの詳細を取得できる", () => {
+    // 前のテストで更新されている場合があるので、再登録して確認
+    registerEntry(sampleEntry, { skipYaml: true });
     const detail = getSourceDetail("test_source");
     expect(detail).not.toBeNull();
     expect(detail!.source.name).toBe("テストデータソース");

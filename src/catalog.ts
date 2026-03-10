@@ -33,13 +33,17 @@ export function loadAllYaml(): CatalogEntry[] {
 
   const entries: CatalogEntry[] = [];
   walkYamlFiles(SOURCES_DIR, (filePath) => {
-    const content = fs.readFileSync(filePath, "utf-8");
-    const data = parse(content);
-    const result = CatalogEntrySchema.safeParse(data);
-    if (result.success) {
-      entries.push(result.data);
-    } else {
-      console.error(`[WARN] ${filePath} のパースに失敗: ${result.error.message}`);
+    try {
+      const content = fs.readFileSync(filePath, "utf-8");
+      const data = parse(content);
+      const result = CatalogEntrySchema.safeParse(data);
+      if (result.success) {
+        entries.push(result.data);
+      } else {
+        console.error(`[WARN] ${filePath} のバリデーションに失敗: ${result.error.message}`);
+      }
+    } catch (e) {
+      console.error(`[WARN] ${filePath} の読み込みに失敗 (スキップ): ${(e as Error).message}`);
     }
   });
   return entries;
@@ -53,6 +57,24 @@ function walkYamlFiles(dir: string, callback: (filePath: string) => void): void 
       walkYamlFiles(fullPath, callback);
     } else if (entry.name.endsWith(".yaml") || entry.name.endsWith(".yml")) {
       callback(fullPath);
+    }
+  }
+}
+
+/**
+ * 指定カテゴリ以外のディレクトリに存在する同一 source.id の YAML を削除する。
+ * カテゴリ変更時に旧ファイルが残って rebuildIndex() で重複するのを防ぐ。
+ */
+function removeStaleYaml(sourceId: string, currentCategory: string): void {
+  if (!fs.existsSync(SOURCES_DIR)) return;
+
+  const fileName = `${sourceId}.yaml`;
+  for (const entry of fs.readdirSync(SOURCES_DIR, { withFileTypes: true })) {
+    if (!entry.isDirectory() || entry.name === currentCategory) continue;
+    const candidate = path.join(SOURCES_DIR, entry.name, fileName);
+    if (fs.existsSync(candidate)) {
+      fs.unlinkSync(candidate);
+      console.log(`[INFO] カテゴリ変更に伴い旧 YAML を削除: ${candidate}`);
     }
   }
 }
@@ -92,8 +114,12 @@ export function rebuildIndex(): { sources: number; datasets: number } {
   `);
 
   const insertFts = db.prepare(`
-    INSERT INTO datasets_fts (name, description, tags, source_name)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO datasets_fts (rowid, name, description, tags, source_name)
+    VALUES (?, ?, ?, ?, ?)
+  `);
+
+  const getDatasetRowid = db.prepare(`
+    SELECT rowid FROM datasets WHERE source_id = ? AND id = ?
   `);
 
   // トランザクションで一括処理。途中失敗時は全ロールバック
@@ -113,8 +139,9 @@ export function rebuildIndex(): { sources: number; datasets: number } {
           d.id, s.id, d.name, d.description, tagsJson, d.url,
           d.update_frequency ?? null, d.last_confirmed, d.access_method, d.notes ?? null
         );
-        // FTS5にはタグをスペース区切りテキストとして投入する
-        insertFts.run(d.name, d.description, d.tags.join(" "), s.name);
+        // datasets.rowid と FTS5.rowid を明示的に一致させる
+        const row = getDatasetRowid.get(s.id, d.id) as { rowid: number };
+        insertFts.run(row.rowid, d.name, d.description, d.tags.join(" "), s.name);
         datasetCount++;
       }
     }
@@ -236,12 +263,22 @@ export function registerEntry(entry: CatalogEntry, options?: { skipYaml?: boolea
       last_confirmed=excluded.last_confirmed, access_method=excluded.access_method, notes=excluded.notes
   `);
 
-  const insertFts = db.prepare(`
-    INSERT INTO datasets_fts (name, description, tags, source_name)
-    VALUES (?, ?, ?, ?)
+  // FTS5 に rowid を明示指定して挿入 (datasets.rowid と一致させる)
+  const insertFtsWithRowid = db.prepare(`
+    INSERT INTO datasets_fts (rowid, name, description, tags, source_name)
+    VALUES (?, ?, ?, ?, ?)
+  `);
+
+  const deleteFtsByRowid = db.prepare(`
+    DELETE FROM datasets_fts WHERE rowid = ?
+  `);
+
+  const getDatasetRowid = db.prepare(`
+    SELECT rowid FROM datasets WHERE source_id = ? AND id = ?
   `);
 
   let newCount = 0;
+  let updatedCount = 0;
 
   // トランザクション内で原子的に処理
   const register = db.transaction(() => {
@@ -252,18 +289,26 @@ export function registerEntry(entry: CatalogEntry, options?: { skipYaml?: boolea
     );
 
     for (const d of entry.datasets) {
-      // 既存チェック: 新規データセットのみFTSインデックスに追加する
-      // (既存データセットのFTS更新は rebuildIndex() で対応)
-      const existing = db.prepare("SELECT 1 FROM datasets WHERE source_id = ? AND id = ?").get(s.id, d.id);
+      const existingRow = getDatasetRowid.get(s.id, d.id) as { rowid: number } | undefined;
       const tagsJson = JSON.stringify(d.tags);
+
+      if (existingRow) {
+        // 既存データセット: FTS を削除してから datasets を更新し、同じ rowid で FTS を再挿入
+        deleteFtsByRowid.run(existingRow.rowid);
+      }
 
       upsertDataset.run(
         d.id, s.id, d.name, d.description, tagsJson, d.url,
         d.update_frequency ?? null, d.last_confirmed, d.access_method, d.notes ?? null
       );
 
-      if (!existing) {
-        insertFts.run(d.name, d.description, d.tags.join(" "), s.name);
+      // UPSERT 後の rowid を取得して FTS に同じ rowid で挿入
+      const row = getDatasetRowid.get(s.id, d.id) as { rowid: number };
+      insertFtsWithRowid.run(row.rowid, d.name, d.description, d.tags.join(" "), s.name);
+
+      if (existingRow) {
+        updatedCount++;
+      } else {
         newCount++;
       }
     }
@@ -284,10 +329,14 @@ export function registerEntry(entry: CatalogEntry, options?: { skipYaml?: boolea
  * YAMLファイルに保存する。
  * ファイルパス: sources/{category}/{source_id}.yaml
  *
- * 既存ファイルがある場合は、新規データセットのみ追記する (ID重複排除)。
+ * 既存ファイルがある場合はソース情報を上書きし、データセットをIDベースでマージする。
+ * カテゴリが変更された場合は旧カテゴリの YAML を削除してから新カテゴリに書き込む。
  * カテゴリ別のサブディレクトリがなければ自動作成する。
  */
 function saveYaml(entry: CatalogEntry): string {
+  // カテゴリ変更に備え、他カテゴリにある同一 source.id の YAML を探索・削除
+  removeStaleYaml(entry.source.id, entry.source.category);
+
   const categoryDir = path.join(SOURCES_DIR, entry.source.category);
   if (!fs.existsSync(categoryDir)) {
     fs.mkdirSync(categoryDir, { recursive: true });
@@ -295,14 +344,23 @@ function saveYaml(entry: CatalogEntry): string {
 
   const filePath = path.join(categoryDir, `${entry.source.id}.yaml`);
 
-  // 既存ファイルがあればデータセットをマージ
+  // 既存ファイルがあればソース情報を上書きし、データセットをIDベースでマージ
   if (fs.existsSync(filePath)) {
     const existing = parse(fs.readFileSync(filePath, "utf-8")) as CatalogEntry;
-    const existingIds = new Set(existing.datasets.map((d) => d.id));
-    const newDatasets = entry.datasets.filter((d) => !existingIds.has(d.id));
-    existing.datasets.push(...newDatasets);
-    fs.writeFileSync(filePath, stringify(existing), "utf-8");
-    return `YAML: ${filePath} に ${newDatasets.length} 件追加`;
+    const existingById = new Map(existing.datasets.map((d) => [d.id, d]));
+
+    // 新しいエントリのデータセットで既存を上書き、残りは保持
+    for (const d of entry.datasets) {
+      existingById.set(d.id, d);
+    }
+
+    const merged: CatalogEntry = {
+      source: entry.source,
+      datasets: [...existingById.values()],
+    };
+
+    fs.writeFileSync(filePath, stringify(merged), "utf-8");
+    return `YAML: ${filePath} を更新 (${entry.datasets.length} 件マージ)`;
   }
 
   fs.writeFileSync(filePath, stringify(entry), "utf-8");
