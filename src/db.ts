@@ -1,19 +1,28 @@
 import Database from "better-sqlite3";
 import path from "node:path";
 
-const DB_PATH = path.resolve(import.meta.dirname, "../catalog.db");
+const DEFAULT_DB_PATH = path.resolve(import.meta.dirname, "../catalog.db");
 
 let _db: Database.Database | null = null;
 
-export function getDb(): Database.Database {
-  if (_db) return _db;
+/** DBパスを指定して初期化。":memory:" でインメモリDB (テスト用) */
+export function initDb(dbPath?: string): Database.Database {
+  if (_db) {
+    _db.close();
+    _db = null;
+  }
 
-  _db = new Database(DB_PATH);
+  _db = new Database(dbPath ?? DEFAULT_DB_PATH);
   _db.pragma("journal_mode = WAL");
   _db.pragma("foreign_keys = ON");
 
   migrate(_db);
   return _db;
+}
+
+export function getDb(): Database.Database {
+  if (_db) return _db;
+  return initDb();
 }
 
 function migrate(db: Database.Database): void {

@@ -151,8 +151,8 @@ export function searchCatalog(query: string, limit = 10): Array<{ source: Source
   }));
 }
 
-/** カタログにエントリを登録 (SQLite + YAML 同時書き込み) */
-export function registerEntry(entry: CatalogEntry): string {
+/** カタログにエントリを登録 (SQLite + YAML 同時書き込み。skipYaml: true でSQLiteのみ) */
+export function registerEntry(entry: CatalogEntry, options?: { skipYaml?: boolean }): string {
   const db = getDb();
   const s = entry.source;
 
@@ -207,6 +207,10 @@ export function registerEntry(entry: CatalogEntry): string {
   });
 
   register();
+
+  if (options?.skipYaml) {
+    return `SQLite: ${newCount} 件追加`;
+  }
 
   // YAMLにも書き出し
   const yamlResult = saveYaml(entry);

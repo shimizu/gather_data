@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { rebuildIndex, searchCatalog, registerEntry, getCatalogStats, getSourceDetail } from "../src/catalog.js";
-import { closeDb } from "../src/db.js";
+import { searchCatalog, registerEntry, getCatalogStats, getSourceDetail } from "../src/catalog.js";
+import { initDb, closeDb } from "../src/db.js";
 import type { CatalogEntry } from "../src/types.js";
 
 const sampleEntry: CatalogEntry = {
@@ -37,9 +37,9 @@ const sampleEntry: CatalogEntry = {
 };
 
 beforeAll(() => {
-  // テスト用にインデックスを構築し、テストデータを登録
-  rebuildIndex();
-  registerEntry(sampleEntry);
+  // テスト用にインメモリDBを使用 (YAML書き出しなし)
+  initDb(":memory:");
+  registerEntry(sampleEntry, { skipYaml: true });
 });
 
 afterAll(() => {
