@@ -1,9 +1,8 @@
 import { CatalogEntrySchema } from "../types.js";
-import { saveCatalogEntry } from "../catalog.js";
+import { registerEntry } from "../catalog.js";
 
 /**
- * データソース情報をカタログに登録する。
- * LLMがWeb検索結果から構造化した情報をJSON文字列で渡す。
+ * データソース情報をカタログに登録する (SQLite + YAML 同時書き込み)
  */
 export function registerToCatalogTool(entryJson: string): string {
   try {
@@ -14,7 +13,7 @@ export function registerToCatalogTool(entryJson: string): string {
       return `バリデーションエラー: ${result.error.message}\n\n正しいフォーマットで再度登録してください。`;
     }
 
-    const message = saveCatalogEntry(result.data);
+    const message = registerEntry(result.data);
     return `カタログに登録しました: ${message}`;
   } catch (e) {
     return `JSONパースエラー: ${(e as Error).message}`;

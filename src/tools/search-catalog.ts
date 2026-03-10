@@ -1,23 +1,12 @@
-import { loadCatalog, searchCatalog } from "../catalog.js";
-import type { SearchResult } from "../types.js";
+import { searchCatalog } from "../catalog.js";
 
-export function searchCatalogTool(query: string): string {
-  const entries = loadCatalog();
-
-  if (entries.length === 0) {
-    return "カタログは空です。Web検索でデータソースを探してください。";
-  }
-
-  const results = searchCatalog(entries, query);
+export function searchCatalogTool(query: string, limit = 10): string {
+  const results = searchCatalog(query, limit);
 
   if (results.length === 0) {
     return `カタログに「${query}」に該当するデータセットはありませんでした。Web検索を試してください。`;
   }
 
-  return formatResults(results.slice(0, 10));
-}
-
-function formatResults(results: SearchResult[]): string {
   return results
     .map(
       (r, i) =>

@@ -3,7 +3,8 @@ import { searchCatalogTool } from "./tools/search-catalog.js";
 import { webSearchTool } from "./tools/web-search.js";
 import { fetchPageTool } from "./tools/fetch-page.js";
 import { registerToCatalogTool } from "./tools/register.js";
-import { listCatalogTool } from "./tools/list-catalog.js";
+import { catalogStatsTool } from "./tools/catalog-stats.js";
+import { getSourceDetailTool } from "./tools/get-source-detail.js";
 
 const SYSTEM_PROMPT = `あなたはデータカタログAIエージェントです。
 ユーザーの要求に応じて、データソースを検索・発見・登録します。
@@ -48,13 +49,17 @@ const tools: Anthropic.Tool[] = [
   {
     name: "search_catalog",
     description:
-      "ローカルのデータカタログを検索します。まずこのツールを使ってカタログに既存のデータがないか確認してください。",
+      "ローカルのデータカタログをFTS5全文検索します。まずこのツールを使ってカタログに既存のデータがないか確認してください。",
     input_schema: {
       type: "object" as const,
       properties: {
         query: {
           type: "string",
           description: "検索クエリ（日本語・英語どちらも可）",
+        },
+        limit: {
+          type: "number",
+          description: "最大件数 (デフォルト: 10)",
         },
       },
       required: ["query"],
@@ -93,7 +98,7 @@ const tools: Anthropic.Tool[] = [
   {
     name: "register_to_catalog",
     description:
-      "データソース情報をカタログに登録します。Web検索やページ取得で確認した情報を構造化して登録してください。",
+      "データソース情報をカタログに登録します。SQLiteとYAMLの両方に同時に保存されます。",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -106,19 +111,28 @@ const tools: Anthropic.Tool[] = [
     },
   },
   {
-    name: "list_catalog",
+    name: "catalog_stats",
     description:
-      "カタログに登録されているデータソースの一覧と統計を表示します。",
+      "カタログの統計情報（ソース数、データセット数、カテゴリ内訳）を表示します。",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
+    name: "get_source_detail",
+    description:
+      "特定のデータソースの詳細情報（全データセット含む）を取得します。",
     input_schema: {
       type: "object" as const,
       properties: {
-        filter: {
+        source_id: {
           type: "string",
-          description:
-            "フィルター（ソースID、カテゴリ名、サイト名で絞り込み。省略可）",
+          description: "ソースのID",
         },
       },
-      required: [],
+      required: ["source_id"],
     },
   },
 ];
@@ -130,15 +144,17 @@ async function executeTool(
 ): Promise<string> {
   switch (name) {
     case "search_catalog":
-      return searchCatalogTool(input.query as string);
+      return searchCatalogTool(input.query as string, input.limit as number | undefined);
     case "web_search":
       return await webSearchTool(input.query as string);
     case "fetch_page":
       return await fetchPageTool(input.url as string);
     case "register_to_catalog":
       return registerToCatalogTool(input.entry_json as string);
-    case "list_catalog":
-      return listCatalogTool(input.filter as string | undefined);
+    case "catalog_stats":
+      return catalogStatsTool();
+    case "get_source_detail":
+      return getSourceDetailTool(input.source_id as string);
     default:
       return `未知のツール: ${name}`;
   }

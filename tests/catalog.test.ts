@@ -1,104 +1,104 @@
-import { describe, it, expect } from "vitest";
-import { searchCatalog } from "../src/catalog.js";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { rebuildIndex, searchCatalog, registerEntry, getCatalogStats, getSourceDetail } from "../src/catalog.js";
+import { closeDb } from "../src/db.js";
 import type { CatalogEntry } from "../src/types.js";
 
-const sampleEntries: CatalogEntry[] = [
-  {
-    source: {
-      id: "estat",
-      name: "e-Stat (政府統計の総合窓口)",
-      url: "https://www.e-stat.go.jp/",
-      description: "日本の政府統計を横断的に検索・閲覧できるポータルサイト",
-      provider: "総務省統計局",
-      category: "government",
-      formats: ["csv", "json", "xml"],
-    },
-    datasets: [
-      {
-        id: "population_census",
-        name: "国勢調査 人口等基本集計",
-        description: "5年ごとの全数調査による日本の人口・世帯の基本統計",
-        tags: ["人口", "世帯", "国勢調査", "都道府県", "市区町村"],
-        url: "https://www.e-stat.go.jp/stat-search/files?toukei=00200521",
-        last_confirmed: "2026-03-10",
-        access_method: "api",
-        notes: "appIdが必要",
-      },
-      {
-        id: "cpi",
-        name: "消費者物価指数",
-        description: "全国の消費者物価指数（月次）",
-        tags: ["物価", "CPI", "消費者物価", "経済指標", "月次"],
-        url: "https://www.e-stat.go.jp/stat-search/files?toukei=00200573",
-        last_confirmed: "2026-03-10",
-        access_method: "api",
-      },
-    ],
+const sampleEntry: CatalogEntry = {
+  source: {
+    id: "test_source",
+    name: "テストデータソース",
+    url: "https://example.com",
+    description: "テスト用のデータソース",
+    provider: "テスト組織",
+    category: "government",
+    formats: ["csv", "json"],
   },
-  {
-    source: {
-      id: "worldbank",
-      name: "World Bank Open Data",
-      url: "https://data.worldbank.org/",
-      description: "世界銀行が提供する各国の経済・社会指標データ",
-      provider: "World Bank",
-      category: "international",
-      formats: ["csv", "json", "xml"],
+  datasets: [
+    {
+      id: "population",
+      name: "人口統計データ",
+      description: "都道府県別の人口統計",
+      tags: ["人口", "都道府県", "統計"],
+      url: "https://example.com/population",
+      last_confirmed: "2026-03-10",
+      access_method: "api",
+      notes: "テスト用",
     },
-    datasets: [
-      {
-        id: "gdp",
-        name: "GDP (current US$)",
-        description: "各国のGDP（名目、USドル）",
-        tags: ["GDP", "経済", "国際比較", "年次"],
-        url: "https://data.worldbank.org/indicator/NY.GDP.MKTP.CD",
-        last_confirmed: "2026-03-10",
-        access_method: "api",
-      },
-    ],
-  },
-];
+    {
+      id: "gdp",
+      name: "GDP統計",
+      description: "国内総生産のデータ",
+      tags: ["GDP", "経済", "国内総生産"],
+      url: "https://example.com/gdp",
+      last_confirmed: "2026-03-10",
+      access_method: "download",
+    },
+  ],
+};
 
-describe("searchCatalog", () => {
+beforeAll(() => {
+  // テスト用にインデックスを構築し、テストデータを登録
+  rebuildIndex();
+  registerEntry(sampleEntry);
+});
+
+afterAll(() => {
+  closeDb();
+});
+
+describe("searchCatalog (FTS5)", () => {
   it("タグで検索できる", () => {
-    const results = searchCatalog(sampleEntries, "人口");
+    const results = searchCatalog("人口");
     expect(results.length).toBeGreaterThan(0);
-    expect(results[0].dataset.id).toBe("population_census");
+    expect(results.some((r) => r.dataset.id === "population")).toBe(true);
   });
 
   it("名前で検索できる", () => {
-    const results = searchCatalog(sampleEntries, "消費者物価");
+    const results = searchCatalog("GDP");
     expect(results.length).toBeGreaterThan(0);
-    expect(results[0].dataset.id).toBe("cpi");
+    expect(results.some((r) => r.dataset.id === "gdp")).toBe(true);
   });
 
-  it("英語タグで検索できる", () => {
-    const results = searchCatalog(sampleEntries, "GDP");
+  it("説明文で検索できる", () => {
+    const results = searchCatalog("都道府県");
     expect(results.length).toBeGreaterThan(0);
-    expect(results[0].dataset.id).toBe("gdp");
-  });
-
-  it("複数キーワードで検索できる", () => {
-    const results = searchCatalog(sampleEntries, "人口 都道府県");
-    expect(results.length).toBeGreaterThan(0);
-    expect(results[0].dataset.id).toBe("population_census");
   });
 
   it("該当なしの場合は空配列を返す", () => {
-    const results = searchCatalog(sampleEntries, "存在しないデータ");
+    const results = searchCatalog("zzzznotfound");
     expect(results.length).toBe(0);
   });
 
   it("空クエリは空配列を返す", () => {
-    const results = searchCatalog(sampleEntries, "");
+    const results = searchCatalog("");
     expect(results.length).toBe(0);
   });
 
-  it("スコア順にソートされる", () => {
-    const results = searchCatalog(sampleEntries, "経済");
-    expect(results.length).toBeGreaterThanOrEqual(2);
-    for (let i = 0; i < results.length - 1; i++) {
-      expect(results[i].score).toBeGreaterThanOrEqual(results[i + 1].score);
-    }
+  it("limitで件数を制限できる", () => {
+    const results = searchCatalog("人口 OR GDP", 1);
+    expect(results.length).toBeLessThanOrEqual(1);
+  });
+});
+
+describe("getCatalogStats", () => {
+  it("統計情報を返す", () => {
+    const stats = getCatalogStats();
+    expect(stats.sources).toBeGreaterThanOrEqual(1);
+    expect(stats.datasets).toBeGreaterThanOrEqual(2);
+    expect(stats.categories).toHaveProperty("government");
+  });
+});
+
+describe("getSourceDetail", () => {
+  it("ソースの詳細を取得できる", () => {
+    const detail = getSourceDetail("test_source");
+    expect(detail).not.toBeNull();
+    expect(detail!.source.name).toBe("テストデータソース");
+    expect(detail!.datasets.length).toBe(2);
+  });
+
+  it("存在しないソースはnullを返す", () => {
+    const detail = getSourceDetail("nonexistent");
+    expect(detail).toBeNull();
   });
 });
