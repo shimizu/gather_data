@@ -1,0 +1,56 @@
+source:
+  id: pcbs_palestine
+  name: Palestinian Central Bureau of Statistics (PCBS)
+  url: https://www.pcbs.gov.ps/
+  description: パレスチナ中央統計局による公式統計データ。人口統計、経済指標、社会統計、ガザと西岸地区の詳細な統計情報を提供。アラビア語と英語で利用可能。
+  provider: Palestinian Central Bureau of Statistics
+  category: government
+  formats:
+    - pdf
+    - xlsx
+    - csv
+    - html
+datasets:
+  - id: pcbs_gaza_casualties
+    name: イスラエル占領軍によるパレスチナ攻撃の統計
+    description: 2023年10月7日以降のイスラエル占領軍による攻撃に関するPCBSの公式統計。死者、負傷者、避難民、拘束者、建物被害などの最新データを毎日更新。
+    tags:
+      - gaza
+      - palestine
+      - casualties
+      - deaths
+      - injuries
+      - displacement
+      - buildings
+      - official
+    url: https://www.pcbs.gov.ps/
+    last_confirmed: 2026-03-10
+    access_method: scrape
+    notes: 2026年3月9日21時更新分まで。パレスチナ政府公式統計
+  - id: pcbs_population_projections
+    name: Population Projections by Governorate 2017-2026
+    description: 県別人口推計データ（2017-2026年）。ガザ、西岸の各県の詳細人口統計と将来推計を含む。
+    tags:
+      - gaza
+      - palestine
+      - population
+      - demographics
+      - projections
+    url: https://www.pcbs.gov.ps/site/lang__en/803/Default.aspx
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: ガザ地区の各県（Gaza, North Gaza, Deir Al-Balah, Khan Yunis, Rafah）の人口データを含む
+  - id: pcbs_gaza_food_prices
+    name: "State of Palestine: Prices of Basic Commodities in Gaza"
+    description: ガザ地区の基本商品価格データ。食料品や生活必需品の価格動向を追跡。人道危機下での経済状況分析に重要。
+    tags:
+      - gaza
+      - palestine
+      - food prices
+      - commodities
+      - economics
+      - humanitarian
+    url: https://www.pcbs.gov.ps/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: HDXでも配布されている

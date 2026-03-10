@@ -1,0 +1,38 @@
+source:
+  id: unocha_ukraine
+  name: UN OCHA Ukraine
+  url: https://www.unocha.org/ukraine
+  description: 国連人道問題調整事務所（OCHA）によるウクライナ人道支援活動の統括ページ。人道支援計画、資金調達状況、避難民支援、保護活動等の包括的情報を提供。
+  provider: UN OCHA (United Nations Office for the Coordination of Humanitarian Affairs)
+  category: international
+  formats:
+    - pdf
+    - excel
+    - json
+datasets:
+  - id: ukraine_hrp_2026
+    name: ウクライナ人道支援対応計画2026
+    description: 2026年の人道支援計画。410万人への支援を対象とし、23億ドルの資金が必要。前線対応、新規避難民支援、緊急援助、脆弱層保護を重点分野とする
+    tags:
+      - humanitarian_response
+      - funding
+      - displacement
+      - protection
+      - front_line
+    url: https://www.unocha.org/ukraine
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 総人口3,420万人中1,080万人が支援を必要とする状況。資金調達率24.26%（17億ドルの資金不足）
+  - id: ukraine_humanitarian_fund
+    name: ウクライナ人道基金（UHF）
+    description: 2019年設立の迅速・柔軟な資金調達メカニズム。世界最大のCBPF（国別プールドファンド）として、国内外のNGOと国連機関を支援
+    tags:
+      - funding
+      - cbpf
+      - ngo_support
+      - rapid_response
+      - pooled_fund
+    url: https://www.unocha.org/ukraine
+    last_confirmed: 2026-03-10
+    access_method: api
+    notes: 2023年にCBPF全体の17%、人道支援計画資金の7%を占める

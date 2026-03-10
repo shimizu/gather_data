@@ -1,0 +1,57 @@
+source:
+  id: hdx_palestine
+  name: HDX - State of Palestine Humanitarian Data
+  url: https://data.humdata.org/group/pse
+  description: 人道データ交換プラットフォーム（HDX）によるパレスチナ国家の人道データ集約サイト。242のデータセットを含み、紛争、避難民、食料安全保障、保健、教育、インフラなど多岐にわたる人道データを提供。
+  provider: UN OCHA Humanitarian Data Exchange
+  category: international
+  formats:
+    - csv
+    - xlsx
+    - json
+    - geojson
+    - shp
+datasets:
+  - id: acled_palestine_conflict
+    name: Palestine - Conflict Events (ACLED)
+    description: Armed Conflict Location & Event Data
+      Project（ACLED）によるパレスチナでの紛争イベントデータ。暴力事件、抗議活動、死傷者数などの詳細な位置情報付きデータ。
+    tags:
+      - gaza
+      - palestine
+      - conflict
+      - casualties
+      - violence
+      - geospatial
+    url: https://data.humdata.org/group/pse
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: リアルタイムに近い紛争・暴力データの最高品質ソース
+  - id: palestine_displaced_population
+    name: State of Palestine - Data on forcibly displaced populations
+    description: UNHCRによるパレスチナの強制移住者・難民・無国籍者に関するデータ。ガザからの避難民を含む強制移住人口の統計。
+    tags:
+      - gaza
+      - palestine
+      - displacement
+      - refugees
+      - idp
+      - unhcr
+    url: https://data.humdata.org/group/pse
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 国連難民高等弁務官事務所（UNHCR）提供
+  - id: palestine_food_security
+    name: "State of Palestine: Acute Food Insecurity Country Data"
+    description: 統合食料安全保障段階分類（IPC）によるパレスチナの急性食料不安データ。ガザ地区での飢饉確認（2025年8月）を含む食料危機の詳細分析。
+    tags:
+      - gaza
+      - palestine
+      - food security
+      - famine
+      - nutrition
+      - humanitarian
+    url: https://data.humdata.org/group/pse
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 2025年8月にガザ地区で飢饉が確認されたIPC分析を含む

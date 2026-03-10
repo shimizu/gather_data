@@ -1,0 +1,16 @@
+現状レビュー Findings
+
+1. 高: source.category を変更すると古い YAML が残り、再構築時に重複ソース化する
+- 該当: src/catalog.ts
+- saveYaml() は新しいカテゴリ配下の `sources/{category}/{source_id}.yaml` だけを見て更新または新規作成する。
+- 旧カテゴリ配下にある同一 source.id の YAML を探索・削除していない。
+- そのため、たとえば `government/foo.yaml` を `international` に変更して再登録すると、`international/foo.yaml` が追加されても `government/foo.yaml` は残る。
+- 次回 rebuildIndex() では両方を読み込むため、最終状態が走査順依存になり、FTS にも重複登録が入り得る。
+
+Open Questions / Assumptions
+- category を変更不可とする設計なら、更新時に拒否するバリデーションを入れる方が安全。
+- category 変更を許可するなら、source.id ベースで全カテゴリから既存 YAML を探索して移動または置換する必要がある。
+
+確認結果
+- 前回指摘のうち、FTS 更新漏れ、YAML 構文エラー時のクラッシュ、web_search のタイムアウト欠如は解消済み。
+- npm test は 11 件すべて通過。

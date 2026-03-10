@@ -1,0 +1,39 @@
+source:
+  id: acled
+  name: ACLED - Armed Conflict Location & Event Data Project
+  url: https://acleddata.com/
+  description: 世界中の暴力的紛争と抗議活動に関するリアルタイムデータと分析を提供する独立・公平な紛争監視機関。ウクライナ紛争モニターを含む包括的な紛争データベース。
+  provider: ACLED
+  category: private
+  formats:
+    - csv
+    - json
+    - excel
+datasets:
+  - id: acled_ukraine_monitor
+    name: ACLED ウクライナ紛争モニター
+    description: 進行中のウクライナ戦争に関するリアルタイム情報。インタラクティブマップ、キュレートされたデータファイル、週次状況レポートを提供
+    tags:
+      - ukraine
+      - conflict
+      - real_time
+      - casualties
+      - violence
+      - mapping
+    url: https://acleddata.com/
+    last_confirmed: 2026-03-10
+    access_method: api
+    notes: 研究者、政策立案者、メディア向けに設計。週次更新と詳細な状況分析を提供
+  - id: acled_conflict_index
+    name: ACLED紛争指数
+    description: 世界各国・地域の紛争状況を4つの指標（致命性、民間人への危険、地理的拡散、武装集団数）で評価するグローバル評価
+    tags:
+      - conflict_index
+      - global
+      - assessment
+      - indicators
+      - comparison
+    url: https://acleddata.com/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 国際比較や紛争リスク評価に有用

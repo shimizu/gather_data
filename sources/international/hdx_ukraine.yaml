@@ -1,0 +1,52 @@
+source:
+  id: hdx_ukraine
+  name: HDX - Ukraine Humanitarian Data
+  url: https://data.humdata.org/group/ukr
+  description: 国連人道問題調整事務所（OCHA）が運営する人道支援データプラットフォームのウクライナ特設ページ。戦争による被害、避難民、人道支援等の包括的データを提供。235のデータセットが利用可能。
+  provider: UN OCHA (United Nations Office for the Coordination of Humanitarian Affairs)
+  category: international
+  formats:
+    - csv
+    - json
+    - excel
+    - geojson
+    - shapefile
+datasets:
+  - id: hdx_ukraine_displacement
+    name: ウクライナ国内避難民データ（IOM DTM）
+    description: 国際移住機関（IOM）の避難追跡マトリックス（DTM）による国内避難民の動向データ。地域別の避難民数、帰還者数、人道支援ニーズを含む
+    tags:
+      - displacement
+      - refugees
+      - IDP
+      - humanitarian
+      - conflict
+    url: https://data.humdata.org/group/ukr
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: IOM（国際移住機関）による公式データ。リアルタイムに近い更新
+  - id: hdx_ukraine_conflict_events
+    name: ウクライナ紛争イベントデータ（ACLED）
+    description: 武力紛争位置・イベントデータプロジェクト（ACLED）による紛争イベントの詳細データ。暴力事件、抗議活動、死傷者数等を地理的・時系列的に記録
+    tags:
+      - conflict
+      - violence
+      - casualties
+      - geospatial
+      - acled
+    url: https://data.humdata.org/group/ukr
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 世界最高品質の紛争データソース。リアルタイムに近い更新
+  - id: hdx_ukraine_humanitarian_access
+    name: ウクライナ人道支援アクセス・国境通過データ
+    description: 人道支援物資の配送状況、国境通過点の状況、アクセス制限地域等の情報
+    tags:
+      - humanitarian_access
+      - border_crossings
+      - aid_delivery
+      - logistics
+    url: https://data.humdata.org/group/ukr
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: OCHA Ukraine提供。物流・配送計画に必要な情報を含む

@@ -1,0 +1,28 @@
+source:
+  id: unocha_opt
+  name: UN OCHA Occupied Palestinian Territory
+  url: https://www.unocha.org/occupied-palestinian-territory
+  description: 国連人道問題調整事務所（UN
+    OCHA）による占領パレスチナ領域の人道状況に関する包括的なデータとレポート。ガザ地区と西岸地区での紛争、避難、被害、人道支援に関する最新情報を提供。
+  provider: United Nations Office for the Coordination of Humanitarian Affairs (OCHA)
+  category: international
+  formats:
+    - pdf
+    - html
+    - csv
+datasets:
+  - id: opt_humanitarian_response
+    name: OPT Humanitarian Response Plan 2026
+    description: 2026年のパレスチナ占領地域における人道対応計画。ガザ地区と西岸地区での人道危機、被害状況、必要な支援規模（41億ドル）などの詳細データを含む。360万人への支援計画。
+    tags:
+      - gaza
+      - palestine
+      - humanitarian
+      - casualties
+      - displacement
+      - conflict
+      - aid
+    url: https://www.unocha.org/occupied-palestinian-territory
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: Flash Appealとしても公開。578名の援助従事者が殺害されるなど詳細な被害統計を含む

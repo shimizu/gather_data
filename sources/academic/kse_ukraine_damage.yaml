@@ -1,0 +1,76 @@
+source:
+  id: kse_ukraine_damage
+  name: KSE Institute - Russia Will Pay Project
+  url: https://kse.ua/russia-will-pay/
+  description: キーウ経済学院（KSE）研究所による包括的戦争被害評価プロジェクト。ロシアの軍事侵攻による民間インフラへの直接的損失を収集・評価・分析・文書化。ウクライナ大統領府、経済省等と連携してUSAIDの支援を受けて実施。
+  provider: KSE Institute (Kyiv School of Economics)
+  category: academic
+  formats:
+    - pdf
+    - csv
+    - json
+datasets:
+  - id: kse_infrastructure_damage_2024_11
+    name: インフラ被害レポート（2024年11月）
+    description: ロシアの軍事侵攻によるウクライナのインフラ破壊による被害の最新評価。住宅、交通、エネルギー、教育、医療等の分野別被害額を詳細分析
+    tags:
+      - infrastructure
+      - damage_assessment
+      - housing
+      - transport
+      - energy
+      - healthcare
+      - education
+    url: https://kse.ua/russia-will-pay/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 市民からの通報、政府・地方自治体データ、公開情報源を基に算定。個人補償・国際法廷証拠として活用可能
+  - id: kse_energy_sector_damage_2024_05
+    name: エネルギー部門被害評価（2024年5月）
+    description: ロシアの全面侵攻によるウクライナのエネルギー部門への被害・損失の詳細分析
+    tags:
+      - energy
+      - power_infrastructure
+      - electricity
+      - damage_assessment
+    url: https://kse.ua/russia-will-pay/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 発電所、送電網、石油・ガス施設等の被害を包括的に評価
+  - id: kse_housing_damage_54billion
+    name: 住宅被害540億ドル評価（2023年5月）
+    description: 全面戦争の結果としてウクライナの住宅ストックに対する540億ドルを超える被害の分析
+    tags:
+      - housing
+      - residential
+      - 540_billion
+      - war_damage
+    url: https://kse.ua/russia-will-pay/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 住宅破壊の規模と経済的影響を定量化した重要な評価
+  - id: kse_kakhovka_dam_analysis
+    name: カホウカ水力発電所爆破影響分析
+    description: カホウカ水力発電所の爆破によるヘルソン・ミコライウ地域への影響、洪水被災地域の分析、20億ドルの被害評価を含む包括的分析
+    tags:
+      - kakhovka_dam
+      - flooding
+      - environmental_damage
+      - disaster_analysis
+      - 2_billion
+    url: https://kse.ua/russia-will-pay/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 環境破壊と人道的影響を含む詳細な被害分析。地理空間データも含む
+  - id: kse_cultural_sites_damage
+    name: 文化・宗教施設被害評価
+    description: 戦争中の文化・宗教施設破壊による15億ドルを超える被害の分析
+    tags:
+      - cultural_heritage
+      - religious_sites
+      - cultural_destruction
+      - 1.5_billion
+    url: https://kse.ua/russia-will-pay/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: ユネスコ世界遺産や重要な文化遺産への戦争による影響を評価

@@ -1,0 +1,38 @@
+source:
+  id: worldbank_ukraine
+  name: World Bank - Ukraine Recovery and Reconstruction
+  url: https://www.worldbank.org/en/country/ukraine
+  description: 世界銀行によるウクライナの復興・再建に関する包括的データと分析。復興・再建ニーズ評価（RDNA）、被害評価レポート、経済分析を提供。
+  provider: World Bank Group
+  category: international
+  formats:
+    - pdf
+    - excel
+    - csv
+datasets:
+  - id: ukraine_rdna5
+    name: ウクライナ復興・再建ニーズ評価第5版（RDNA5）
+    description: 2022年2月～2025年12月の期間における戦争被害の包括的評価。総復興・再建コストは今後10年間で約5,880億ドルと算定
+    tags:
+      - reconstruction
+      - damage_assessment
+      - economic_impact
+      - infrastructure
+      - recovery_costs
+    url: https://www.worldbank.org/en/news/press-release/2026/02/23/updated-ukraine-recovery-and-reconstruction-needs-assessment-released
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: ウクライナ政府、EU、国連と共同実施。最も包括的な被害・ニーズ評価
+  - id: ukraine_poverty_equity_brief
+    name: ウクライナ貧困・公平性ブリーフ（2025年10月）
+    description: 戦争が社会経済状況、貧困率、社会保護制度に与える影響の分析
+    tags:
+      - poverty
+      - social_impact
+      - economics
+      - welfare
+      - social_protection
+    url: https://documents1.worldbank.org/curated/en/099525004222548766/pdf/IDU-0a4b9a0b-7290-4fe5-b1be-d0c967b2d0ad.pdf
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 社会経済的影響の詳細分析を含む
