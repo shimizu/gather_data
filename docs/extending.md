@@ -74,6 +74,8 @@ rm catalog.db
 npm run build:catalog
 ```
 
+**注意**: カテゴリを変更して `registerEntry()` で再登録した場合、旧カテゴリの YAML は自動削除される。手動で YAML を移動する必要はない。
+
 ## スキーマの変更
 
 ### dataset にフィールドを追加する例

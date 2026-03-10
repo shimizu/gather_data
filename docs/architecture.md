@@ -111,6 +111,19 @@ runAgent(userMessage)
 起動時に YAML → SQLite の再構築を自動実行する。
 YAML を手動編集した場合は `npm run build:catalog` で再構築する。
 
+### registerEntry の更新挙動
+
+`registerEntry()` は新規登録と更新の両方を処理する:
+
+- **SQLite**: `UPSERT` で source / dataset を更新
+- **FTS5**: 既存データセットは rowid ベースで DELETE → 同じ rowid で INSERT して検索インデックスを同期。`datasets.rowid` と `datasets_fts.rowid` を明示的に一致させることで `searchCatalog()` の JOIN 整合性を保証する
+- **YAML**: source 情報は丸ごと上書き、datasets は ID ベースでマージ（既存 dataset も最新値に更新）
+- **カテゴリ変更**: 新カテゴリに書き込む前に、他カテゴリにある同一 source.id の YAML を自動削除して重複を防止
+
+### YAML 読み込みの耐障害性
+
+`loadAllYaml()` は壊れた YAML ファイルに遭遇してもクラッシュせず、警告を出してスキップする。YAML 構文エラーと Zod バリデーションエラーの両方を捕捉する。
+
 ## SQLiteスキーマ
 
 ```sql
@@ -140,6 +153,7 @@ datasets_fts (FTS5仮想テーブル)
 ```
 
 `datasets_fts` は `datasets` テーブルの `rowid` で JOIN して使う。
+`rebuildIndex()` と `registerEntry()` では FTS5 挿入時に rowid を明示指定し、datasets との対応を保証している。
 
 ## ディレクトリ構成
 
