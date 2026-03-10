@@ -1,0 +1,28 @@
+source:
+  id: worldbank-iran
+  name: World Bank - Iran, Islamic Rep. Country Data
+  url: https://data.worldbank.org/country/iran-islamic-rep
+  description: イランの人口、経済、社会、環境指標の包括的なデータベース。人口統計、GDP、教育、保健、インフラなど1000以上の時系列指標を提供
+  provider: World Bank Group
+  category: international
+  formats:
+    - csv
+    - xml
+    - excel
+    - json
+datasets:
+  - id: worldbank-iran-population
+    name: Iran Population Statistics
+    description: イランの総人口、人口増加率、移住統計、出生率、平均寿命、人口年齢分布等の包括的人口データ。最新データは2024年で総人口91,567,738人
+    tags:
+      - イラン
+      - 人口
+      - 人口統計
+      - 人口増加
+      - 移住
+      - 出生率
+      - 平均寿命
+    url: https://data.worldbank.org/country/iran-islamic-rep
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: CSV、XML、Excel形式でダウンロード可能。API経由でのアクセスも可能。1960年からの長期時系列データあり

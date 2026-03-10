@@ -1,0 +1,27 @@
+source:
+  id: un-data-iran
+  name: UN Data - Iran Country Profile
+  url: https://data.un.org/en/iso/ir.html
+  description: イランの総合的な国別統計プロファイル。人口、経済、社会、環境指標を包含する国連統計部門の公式データ
+  provider: United Nations Statistics Division
+  category: international
+  formats:
+    - html
+    - csv
+    - json
+datasets:
+  - id: un-data-iran-demographics
+    name: Iran Demographic and Social Indicators
+    description: イランの人口92,418千人（2025年）、人口密度、都市化率、出生率、平均寿命、年齢分布等の詳細な人口統計データ。国際移住者数や難民統計も含む
+    tags:
+      - イラン
+      - 人口統計
+      - 社会指標
+      - 都市化
+      - 移住
+      - 難民
+      - 人口密度
+    url: https://data.un.org/en/iso/ir.html
+    last_confirmed: 2026-03-10
+    access_method: scrape
+    notes: 2015-2025年のトレンドデータあり。国連の公式推計値を使用。UNdata APIでアクセス可能
