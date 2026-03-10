@@ -1,0 +1,26 @@
+source:
+  id: fred
+  name: FRED - Federal Reserve Economic Data
+  url: https://fred.stlouisfed.org/
+  description: セントルイス連邦準備銀行が提供する経済統計データベース。1991年から運営され、アメリカの主要経済指標を包括的にカバーしている。
+  provider: Federal Reserve Bank of St. Louis
+  category: government
+  formats:
+    - csv
+    - excel
+    - json
+    - xml
+datasets:
+  - id: fred_gdp
+    name: Gross Domestic Product (GDP)
+    description: アメリカの四半期GDP（季節調整済み年率、10億ドル単位）。アメリカ経済分析局（BEA）のデータに基づく。
+    tags:
+      - GDP
+      - 経済成長
+      - 四半期
+      - アメリカ
+      - マクロ経済
+    url: https://fred.stlouisfed.org/series/GDP
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 1947年から現在まで。四半期ごとに更新。データのダウンロード、API利用、グラフ作成機能あり。

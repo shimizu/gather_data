@@ -2,37 +2,67 @@
 
 ## 目的
 
-「どこに何のデータがあるか」を構造化して管理し、自然言語で検索できるようにする。
+「◯◯に関連するデータを探して」と指示すると、AIエージェントが：
+1. Webを検索してデータソースを発見する
+2. 発見した情報を構造化してカタログに登録する
+3. 次回以降はカタログから即座に回答できる（知識が蓄積される）
 
 ---
 
 ## 全体像
 
 ```
-ユーザー (CLI)
-  │
+ユーザー
   │  「人口に関するデータを探して」
   ↓
-検索インターフェース (Node.js CLI)
+エージェントコア (Claude API + ツール)
   │
-  ├── キーワード検索 (タグ・名前のマッチング)
-  └── LLM検索 (自然言語 → カタログから該当を抽出)
+  ├─① カタログ検索 ← まずローカルのカタログを探す
+  │    ヒットあり → 結果を返す
   │
-  ↓
-データカタログ (YAML ファイル群)
-  ├── sources/
-  │   ├── estat.yaml        # e-Stat
-  │   ├── resas.yaml        # RESAS
-  │   ├── data_go_jp.yaml   # data.go.jp
-  │   ├── worldbank.yaml    # World Bank
-  │   └── ...
-  ↓
-検索結果の表示
-  ├── データセット名
-  ├── 提供元・URL
-  ├── 取得方法 (API / ダウンロード / スクレイピング)
-  └── 備考 (APIキー要否、形式など)
+  ├─② Web検索 ← カタログになければWebを探す
+  │    ├── Google検索 / データポータル検索
+  │    ├── 見つけたページの内容を読み取り
+  │    └── データセット情報を構造化して抽出
+  │
+  └─③ カタログ登録 ← 発見した情報をカタログに保存
+       └── sources/*.yaml に追記・新規作成
 ```
+
+### フロー詳細
+
+```
+[ユーザーのクエリ]
+       ↓
+[LLM] クエリを解釈し、ツールの使用を計画
+       ↓
+[Tool: search_catalog] ローカルカタログを検索
+       ↓
+   ┌── ヒットあり → 結果を整形して返答
+   └── ヒットなし or 不十分
+           ↓
+       [Tool: web_search] Web検索でデータソースを探す
+           ↓
+       [Tool: fetch_page] 候補ページの内容を読み取る
+           ↓
+       [LLM] ページ内容からデータセット情報を構造化
+           ↓
+       [Tool: register_to_catalog] カタログに登録
+           ↓
+       ユーザーに結果を返答
+```
+
+---
+
+## エージェントのツール定義
+
+| ツール名 | 説明 | 入力 | 出力 |
+|----------|------|------|------|
+| search_catalog | ローカルカタログを検索 | query: string | マッチしたデータセット一覧 |
+| web_search | Webを検索してデータソース候補を取得 | query: string | 検索結果（URL+スニペット） |
+| fetch_page | 指定URLのページ内容を取得 | url: string | ページのテキスト内容 |
+| register_to_catalog | データセット情報をカタログに登録 | source + dataset情報 | 登録結果 |
+| list_catalog | カタログの一覧・統計を表示 | filter?: object | ソース/データセット一覧 |
 
 ---
 
@@ -78,21 +108,6 @@ datasets:
     notes: |
       API経由でstatsDataIdを指定してデータ取得可能。
       appIdが必要。
-
-  - id: cpi
-    name: 消費者物価指数
-    description: 全国の消費者物価指数（月次）
-    tags:
-      - 物価
-      - CPI
-      - 消費者物価
-      - 経済指標
-      - 月次
-    url: https://www.e-stat.go.jp/stat-search/files?page=1&toukei=00200573
-    update_frequency: monthly
-    last_confirmed: 2026-03-10
-    access_method: api
-    notes: ""
 ```
 
 ### フィールド定義
@@ -138,73 +153,68 @@ gather_data/
 ├── package.json
 ├── tsconfig.json
 ├── src/
-│   ├── cli.ts              # CLIエントリポイント
-│   ├── catalog.ts          # カタログの読み込み・検索ロジック
-│   ├── models.ts           # 型定義 (TypeScript interfaces + Zod schemas)
-│   └── search.ts           # 検索エンジン (キーワード / LLM)
-├── sources/                # データカタログ本体
-│   ├── estat.yaml
-│   ├── resas.yaml
-│   ├── data_go_jp.yaml
-│   ├── worldbank.yaml
-│   └── ...
+│   ├── index.ts            # エントリポイント (対話ループ)
+│   ├── agent.ts            # エージェントコア (Claude API + ツール実行)
+│   ├── tools/
+│   │   ├── search-catalog.ts   # カタログ検索ツール
+│   │   ├── web-search.ts       # Web検索ツール
+│   │   ├── fetch-page.ts       # ページ取得ツール
+│   │   ├── register.ts         # カタログ登録ツール
+│   │   └── list-catalog.ts     # カタログ一覧ツール
+│   ├── catalog.ts          # カタログ読み書きロジック
+│   └── types.ts            # 型定義 (Zod schemas)
+├── sources/                # データカタログ本体 (AIが自動追記)
+│   └── (最初は空 or シード数件)
 └── tests/
     ├── catalog.test.ts
-    └── search.test.ts
+    └── search-catalog.test.ts
 ```
 
 ---
 
-## 検索の仕組み
+## インターフェース
 
-### Phase 1: キーワード検索（LLMなし）
+### 対話型CLI
 
 ```bash
-# 使い方
-$ gather-data search "人口"
+$ npx tsx src/index.ts
 
-# 結果
+> 人口に関するデータを探して
+
+🔍 カタログを検索中...
+📡 カタログに該当なし。Webを検索します...
+
+見つかったデータソース:
+
 [1] 国勢調査 人口等基本集計 (e-Stat)
-    タグ: 人口, 世帯, 国勢調査, 都道府県
-    取得方法: API
     URL: https://www.e-stat.go.jp/...
+    取得方法: API (appId必要)
+    形式: CSV, JSON, XML
 
-[2] World Population Prospects (World Bank)
-    タグ: 人口, population, 世界, 予測
+[2] 住民基本台帳に基づく人口 (e-Stat)
+    URL: https://www.e-stat.go.jp/...
     取得方法: API
-    URL: https://...
+    形式: CSV, JSON
+
+[3] World Population Prospects (UN)
+    URL: https://population.un.org/wpp/
+    取得方法: ダウンロード
+    形式: Excel, CSV
+
+✅ 3件をカタログに登録しました。
+
+> 前回見つけた人口データのうち、日本の都道府県別のものは？
+
+🔍 カタログを検索中...
+[1] 国勢調査 人口等基本集計 (e-Stat)
+    タグ: 人口, 世帯, 国勢調査, 都道府県, 市区町村
+    ...
 ```
 
-検索ロジック:
-1. 全YAMLを読み込み
-2. `name`, `description`, `tags` に対してクエリを部分一致検索
-3. マッチしたデータセットをスコア順に表示
-
-### Phase 2: LLM検索（将来）
-
-- カタログ全体をコンテキストに入れてLLMに検索させる
-- or Embeddingでベクトル検索
-- 「経済の動向を分析したい」→ GDP、CPI、失業率 等を横断的に提案
-
----
-
-## CLIインターフェース
+### ワンショットモード（将来）
 
 ```bash
-# カタログからデータセットを検索
-$ gather-data search "人口 都道府県"
-
-# カタログの一覧表示
-$ gather-data list
-$ gather-data list --source estat
-$ gather-data list --category government
-
-# データソースの詳細表示
-$ gather-data show estat/population_census
-
-# カタログの統計情報
-$ gather-data stats
-# → 登録ソース数: 5, データセット数: 42, カテゴリ別内訳: ...
+$ gather-data "GDPに関するデータ"
 ```
 
 ---
@@ -213,23 +223,33 @@ $ gather-data stats
 
 | 要素 | 選定 | 理由 |
 |------|------|------|
-| 言語 | TypeScript 5.x | 型安全、Node.jsエコシステム活用 |
-| ランタイム | Node.js 22+ | LTS、ESM対応 |
-| パッケージ管理 | npm | 標準的 |
-| CLI | Commander.js | 軽量で定番 |
-| バリデーション | Zod | TypeScriptとの相性◎、スキーマから型推論 |
-| YAML | yaml (npm) | YAML 1.2準拠、型安全 |
-| テスト | Vitest | 高速、ESM/TypeScriptネイティブ対応 |
-| ビルド | tsx (実行) + tsc (型チェック) | 開発時はtsxで直接実行、CIでtsc |
+| 言語 | TypeScript 5.x | 型安全 |
+| ランタイム | Node.js 22+ | LTS |
+| LLM | Claude API (Anthropic SDK) | tool use対応、日本語に強い |
+| CLI対話 | readline (標準) | 依存なし |
+| バリデーション | Zod | スキーマ→型推論 |
+| YAML | yaml (npm) | YAML 1.2準拠 |
+| Web検索 | Google Custom Search API or SerpAPI | 構造化された検索結果 |
+| ページ取得 | undici (fetch) | Node.js標準 |
+| テスト | Vitest | 高速 |
 
 ---
 
 ## 実装の優先順位
 
-1. **プロジェクト初期化** - package.json, tsconfig.json, Vitest設定
-2. **型定義 + バリデーション** (models.ts) - Zodスキーマ + TypeScript型
-3. **YAMLローダー** (catalog.ts) - sources/以下を読み込み・バリデーション
-4. **キーワード検索** (search.ts) - タグ・名前の部分一致検索
-5. **CLI** (cli.ts) - search / list / show コマンド
-6. **カタログデータ投入** - まず2-3サイト分を手動で作成
-7. **テスト** - 検索ロジックのユニットテスト
+1. **プロジェクト初期化** - package.json, tsconfig.json
+2. **型定義** (types.ts) - Zodスキーマ
+3. **カタログ読み書き** (catalog.ts) - YAML読み込み・保存・検索
+4. **ツール実装** (tools/) - 各ツールの実装
+5. **エージェントコア** (agent.ts) - Claude API + tool use ループ
+6. **対話CLI** (index.ts) - readline対話ループ
+7. **テスト**
+
+---
+
+## 将来の拡張
+
+- **MCP Server化**: このエージェントをMCP Serverとして公開 → Claude Codeから直接呼べる
+- **データダウンロード機能**: カタログに登録済みのデータを実際にダウンロード
+- **定期巡回**: カタログのURLが生きているか定期チェック
+- **カタログの共有**: sources/をGitリポジトリとして公開、コミュニティで育てる

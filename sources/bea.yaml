@@ -1,0 +1,27 @@
+source:
+  id: bea
+  name: U.S. Bureau of Economic Analysis (BEA)
+  url: https://www.bea.gov/
+  description: アメリカ商務省の経済分析局。GDP、個人所得、国際収支等の公式経済統計を作成・公表している政府機関。
+  provider: U.S. Department of Commerce
+  category: government
+  formats:
+    - csv
+    - excel
+    - api
+datasets:
+  - id: bea_gdp
+    name: Gross Domestic Product
+    description: アメリカGDPの公式統計。四半期・年次データ、実質・名目値、詳細な産業別・支出項目別分析を含む包括的なGDPデータ。
+    tags:
+      - GDP
+      - 経済成長
+      - 公式統計
+      - 四半期
+      - 年次
+      - 産業別
+      - 支出項目別
+    url: https://www.bea.gov/data/gdp
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: National Income and Product Accounts (NIPA)の一部。詳細な分析表、メタデータ、技術文書も利用可能。
