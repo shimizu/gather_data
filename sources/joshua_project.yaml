@@ -1,0 +1,52 @@
+source:
+  id: joshua_project
+  name: Joshua Project
+  url: https://joshuaproject.net
+  description: 世界中の民族グループに関する包括的なデータベース。人口、言語、宗教、地理的分布、キリスト教浸透率などの情報を提供。特に「未到達」の民族グループに焦点。
+  provider: Joshua Project
+  category: private
+  formats:
+    - web
+    - csv
+datasets:
+  - id: iran_people_groups
+    name: Iran People Groups
+    description: イランの91の民族グループの詳細データ。人口、言語、宗教、進捗スケール、キリスト教信徒の割合などを含む。アフガン系タジク、アゼルバイジャン系、アラブ系、バルーチ系、クルド系など多様な民族を網羅。
+    tags:
+      - イラン
+      - 民族
+      - 人口
+      - 言語
+      - 宗教
+      - アジア
+    url: https://joshuaproject.net/countries/IR
+    last_confirmed: 2026-03-10
+    access_method: scrape
+    notes: 91の民族グループと12の小規模グループを含む。州別データも利用可能。祈りカード形式でもダウンロード可能。
+  - id: global_people_groups
+    name: Global People Groups Database
+    description: 世界中の16,393の民族グループを網羅する包括的データベース。地理的分布、言語、宗教、人口、キリスト教浸透状況などの詳細情報。
+    tags:
+      - グローバル
+      - 民族
+      - 人口
+      - 言語
+      - 宗教
+      - 地理
+    url: https://joshuaproject.net/people_groups
+    last_confirmed: 2026-03-10
+    access_method: scrape
+    notes: 16の主要アフィニティブロック別に分類。APIやデータエクスポート機能の詳細は要確認。
+  - id: frontier_people_groups
+    name: Frontier People Groups
+    description: キリスト教信徒が1000人に1人未満の3,209の「最前線」民族グループ（19億人）のデータ。最もアプローチが困難な民族コミュニティ。
+    tags:
+      - フロンティア
+      - 民族
+      - 未到達
+      - 人口
+      - 宣教
+    url: https://joshuaproject.net/frontier
+    last_confirmed: 2026-03-10
+    access_method: scrape
+    notes: イラン周辺地域の多くの民族グループが含まれる

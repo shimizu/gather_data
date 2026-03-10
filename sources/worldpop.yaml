@@ -1,0 +1,51 @@
+source:
+  id: worldpop
+  name: WorldPop
+  url: https://www.worldpop.org
+  description: 高解像度の空間人口分布データセットを透明性のある手法で構築・提供。人口分布、人口動態、人口動学に関するオープンアクセスの地理空間データ。
+  provider: University of Southampton
+  category: academic
+  formats:
+    - geotiff
+    - csv
+    - api
+datasets:
+  - id: global_population_2030
+    name: Global Population Data 2015-2030
+    description: 2015年から2030年までのグローバル人口データ。高解像度の地理空間人口分布データ。
+    tags:
+      - 人口
+      - グローバル
+      - 地理空間
+      - 高解像度
+      - 時系列
+      - 予測
+    url: https://www.worldpop.org
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: イランを含む世界各国の詳細人口分布データ。GISで利用可能なGeoTIFF形式
+  - id: population_dynamics
+    name: Population Dynamics
+    description: モバイルネットワーク、衛星、移動スケジュール、調査データを統合して人口移動を捉え、特徴付け、マッピング。
+    tags:
+      - 人口動態
+      - 移動
+      - モバイルデータ
+      - 衛星データ
+    url: https://www.worldpop.org
+    last_confirmed: 2026-03-10
+    access_method: api
+    notes: 人口移動パターンの分析に有用
+  - id: demographic_indicators
+    name: Demographic Development Indicators
+    description: 識字率、貧困、栄養不良などの指標に関する高解像度オープンデータセット。
+    tags:
+      - 人口統計
+      - 開発指標
+      - 識字率
+      - 貧困
+      - 栄養
+    url: https://www.worldpop.org
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 民族分布データとの組み合わせで有用

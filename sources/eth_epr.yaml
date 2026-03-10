@@ -1,0 +1,66 @@
+source:
+  id: eth_epr
+  name: ETH Zürich - Ethnic Power Relations Dataset Family
+  url: https://icr.ethz.ch/data/epr/
+  description: 民族グループの政治的権力アクセス、居住パターン、反乱組織との関係、国境を越えた民族関係、民族内分裂に関するデータを提供。1946年から2021年まで、世界中の800以上の民族グループをカバー。
+  provider: ETH Zürich - International Conflict Research
+  category: academic
+  formats:
+    - csv
+    - json
+    - excel
+    - shapefile
+    - sql
+datasets:
+  - id: epr_core
+    name: EPR Core - Politically Relevant Ethnic Groups
+    description: 政治的に関連する民族グループとその国家権力へのアクセスを識別。1946年から2021年まで、800以上のグループの年次データ。
+    tags:
+      - 民族
+      - 政治
+      - 権力
+      - 時系列
+      - グローバル
+    url: https://icr.ethz.ch/data/epr/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: CSV、JSON、Excel、SQL形式で利用可能
+  - id: geoepr
+    name: GeoEPR - Ethnic Groups Spatial Data
+    description: 政治的に関連する民族グループの地理空間情報。6つの居住パターンに分類し、関連する場合はデジタル地図上の位置を示すポリゴンデータを提供。
+    tags:
+      - 民族
+      - GIS
+      - ポリゴン
+      - 地理空間
+      - 居住パターン
+      - シェープファイル
+    url: https://icr.ethz.ch/data/epr/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: Shapefile形式でGIS利用可能。イランを含む世界各国の民族分布データあり
+  - id: epr_ed
+    name: EPR-ED - Ethnic Dimensions
+    description: 政治的に関連する民族グループの言語的、宗教的、人種的な分裂に関する情報を提供。
+    tags:
+      - 民族
+      - 言語
+      - 宗教
+      - 人種
+      - 分類
+    url: https://icr.ethz.ch/data/epr/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: 民族グループの内部的特徴を詳細に分類
+  - id: epr_tek
+    name: EPR-TEK - Transborder Ethnic Kin
+    description: 少なくとも2つの国に住む政治的に関連する民族グループ、つまり国境を越えた民族的つながりを持つグループを記録。
+    tags:
+      - 民族
+      - 国境
+      - 越境
+      - 民族関係
+    url: https://icr.ethz.ch/data/epr/
+    last_confirmed: 2026-03-10
+    access_method: download
+    notes: イラン周辺国との民族的つながりの分析に有用
