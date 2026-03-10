@@ -1,4 +1,14 @@
-/** 指定URLのページ内容を取得してテキスト化する */
+/**
+ * ページ取得ツール。
+ * 指定URLのHTML内容を取得し、テキストに変換して返す。
+ * エージェントがWeb検索で見つけた候補ページの内容を確認するために使う。
+ *
+ * 制限事項:
+ *   - 15秒のタイムアウト
+ *   - text/html と text/plain のみ対応 (PDF等は非対応)
+ *   - 8000文字で切り詰め (LLMのコンテキスト節約)
+ *   - JavaScript レンダリングが必要なSPAには非対応
+ */
 export async function fetchPageTool(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
@@ -14,6 +24,7 @@ export async function fetchPageTool(url: string): Promise<string> {
       return `ページ取得失敗 (HTTP ${res.status}): ${url}`;
     }
 
+    // バイナリコンテンツ (PDF, 画像等) はスキップ
     const contentType = res.headers.get("content-type") || "";
     if (!contentType.includes("text/html") && !contentType.includes("text/plain")) {
       return `HTMLではないコンテンツ (${contentType}): ${url}`;
@@ -22,7 +33,7 @@ export async function fetchPageTool(url: string): Promise<string> {
     const html = await res.text();
     const text = htmlToText(html);
 
-    // 長すぎる場合は先頭を切り出す
+    // LLMのコンテキストを圧迫しないよう先頭8000文字で打ち切る
     const maxLength = 8000;
     if (text.length > maxLength) {
       return `${url} の内容 (先頭${maxLength}文字):\n\n${text.slice(0, maxLength)}...`;
@@ -34,19 +45,23 @@ export async function fetchPageTool(url: string): Promise<string> {
   }
 }
 
-/** HTMLからテキストを抽出 (簡易版) */
+/**
+ * HTMLからテキストを抽出する簡易パーサー。
+ * ナビゲーション等のノイズ要素を除去してからタグを剥がす。
+ * 本格的なHTML→テキスト変換が必要なら cheerio 等の導入を検討。
+ */
 function htmlToText(html: string): string {
   return (
     html
-      // script, style タグを除去
+      // ノイズの多い要素を丸ごと除去
       .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
       .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, "")
       .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, "")
       .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "")
-      // HTMLタグを除去
+      // 残りのHTMLタグを除去
       .replace(/<[^>]+>/g, " ")
-      // HTMLエンティティをデコード
+      // よく使われるHTMLエンティティをデコード
       .replace(/&amp;/g, "&")
       .replace(/&lt;/g, "<")
       .replace(/&gt;/g, ">")

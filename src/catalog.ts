@@ -1,3 +1,15 @@
+/**
+ * カタログの読み書き・検索ロジック。
+ *
+ * デュアルストレージ設計:
+ *   - YAML (sources/**\/*.yaml): マスターデータ。人間が読める形式でGit管理
+ *   - SQLite (catalog.db): 検索用インデックス。FTS5で高速全文検索
+ *
+ * 主要な操作:
+ *   - rebuildIndex(): YAML → SQLite 全件再構築 (起動時・手動)
+ *   - searchCatalog(): FTS5 で全文検索
+ *   - registerEntry(): SQLite + YAML 同時書き込み
+ */
 import fs from "node:fs";
 import path from "node:path";
 import { parse, stringify } from "yaml";
@@ -5,11 +17,17 @@ import { getDb } from "./db.js";
 import { CatalogEntrySchema } from "./types.js";
 import type { CatalogEntry, Source, Dataset } from "./types.js";
 
+/** YAMLマスターデータの格納ディレクトリ */
 const SOURCES_DIR = path.resolve(import.meta.dirname, "../sources");
 
-// --- YAML読み込み ---
+// =============================================================================
+// YAML読み込み
+// =============================================================================
 
-/** sources/ 以下の全YAMLを再帰的に読み込む */
+/**
+ * sources/ 以下の全YAMLを再帰的に読み込み、Zodでバリデーションして返す。
+ * パースに失敗したファイルはスキップされ、警告がコンソールに出力される。
+ */
 export function loadAllYaml(): CatalogEntry[] {
   if (!fs.existsSync(SOURCES_DIR)) return [];
 
@@ -27,6 +45,7 @@ export function loadAllYaml(): CatalogEntry[] {
   return entries;
 }
 
+/** ディレクトリを再帰的に走査し、.yaml/.yml ファイルごとにコールバックを呼ぶ */
 function walkYamlFiles(dir: string, callback: (filePath: string) => void): void {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const fullPath = path.join(dir, entry.name);
@@ -38,13 +57,23 @@ function walkYamlFiles(dir: string, callback: (filePath: string) => void): void 
   }
 }
 
-// --- SQLite操作 ---
+// =============================================================================
+// SQLiteインデックス再構築
+// =============================================================================
 
-/** YAML → SQLite全件再構築 */
+/**
+ * YAMLマスターデータからSQLiteインデックスを全件再構築する。
+ * 既存データを全削除してからトランザクション内で一括挿入する。
+ *
+ * 呼び出しタイミング:
+ *   - アプリ起動時 (index.ts)
+ *   - npm run build:catalog (build-catalog.ts)
+ */
 export function rebuildIndex(): { sources: number; datasets: number } {
   const db = getDb();
   const entries = loadAllYaml();
 
+  // 外部キー制約の順序に注意: FTS → datasets → sources の順で削除
   db.exec("DELETE FROM datasets_fts");
   db.exec("DELETE FROM datasets");
   db.exec("DELETE FROM sources");
@@ -67,6 +96,7 @@ export function rebuildIndex(): { sources: number; datasets: number } {
     VALUES (?, ?, ?, ?)
   `);
 
+  // トランザクションで一括処理。途中失敗時は全ロールバック
   const rebuildAll = db.transaction(() => {
     for (const entry of entries) {
       const s = entry.source;
@@ -83,6 +113,7 @@ export function rebuildIndex(): { sources: number; datasets: number } {
           d.id, s.id, d.name, d.description, tagsJson, d.url,
           d.update_frequency ?? null, d.last_confirmed, d.access_method, d.notes ?? null
         );
+        // FTS5にはタグをスペース区切りテキストとして投入する
         insertFts.run(d.name, d.description, d.tags.join(" "), s.name);
         datasetCount++;
       }
@@ -93,11 +124,22 @@ export function rebuildIndex(): { sources: number; datasets: number } {
   return { sources: sourceCount, datasets: datasetCount };
 }
 
-/** FTS5でカタログを検索 */
+// =============================================================================
+// FTS5全文検索
+// =============================================================================
+
+/**
+ * FTS5でカタログを全文検索する。
+ *
+ * クエリ変換: "人口 都道府県" → '"人口" OR "都道府県"'
+ * 各単語をダブルクォートで囲み OR 結合することで、いずれかの語にマッチさせる。
+ *
+ * FTS5の rank は負の値で、値が小さいほど関連度が高い。
+ * datasets_fts と datasets を rowid で JOIN して結果を返す。
+ */
 export function searchCatalog(query: string, limit = 10): Array<{ source: Source; dataset: Dataset; rank: number }> {
   const db = getDb();
 
-  // FTS5用のクエリに変換: スペースをORに
   const ftsQuery = query
     .split(/\s+/)
     .filter((t) => t.length > 0)
@@ -125,6 +167,8 @@ export function searchCatalog(query: string, limit = 10): Array<{ source: Source
     LIMIT ?
   `).all(ftsQuery, limit) as Array<Record<string, unknown>>;
 
+  // SQLiteの行データを TypeScript 型にマッピング
+  // api_json, formats, tags はJSON文字列なのでパースする
   return rows.map((row) => ({
     source: {
       id: row.source_id as string,
@@ -151,12 +195,28 @@ export function searchCatalog(query: string, limit = 10): Array<{ source: Source
   }));
 }
 
-/** カタログにエントリを登録 (SQLite + YAML 同時書き込み。skipYaml: true でSQLiteのみ) */
+// =============================================================================
+// カタログ登録 (SQLite + YAML 同時書き込み)
+// =============================================================================
+
+/**
+ * データセット情報をカタログに登録する。
+ *
+ * 書き込み先:
+ *   1. SQLite: UPSERT で即座に検索可能になる
+ *   2. YAML: カテゴリ別サブディレクトリに書き出し (Git管理用)
+ *
+ * 既存ソースに対して登録した場合:
+ *   - SQLite: ON CONFLICT で既存レコードを更新
+ *   - YAML: 既存ファイルに新規データセットのみ追記 (ID重複は除外)
+ *   - FTS5: 新規データセットのみインデックスに追加
+ *
+ * @param options.skipYaml true の場合、YAML書き出しをスキップ (テスト用)
+ */
 export function registerEntry(entry: CatalogEntry, options?: { skipYaml?: boolean }): string {
   const db = getDb();
   const s = entry.source;
 
-  // SQLiteに書き込み
   const upsertSource = db.prepare(`
     INSERT INTO sources (id, name, url, description, provider, category, api_json, formats)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -183,6 +243,7 @@ export function registerEntry(entry: CatalogEntry, options?: { skipYaml?: boolea
 
   let newCount = 0;
 
+  // トランザクション内で原子的に処理
   const register = db.transaction(() => {
     upsertSource.run(
       s.id, s.name, s.url, s.description, s.provider, s.category,
@@ -191,6 +252,8 @@ export function registerEntry(entry: CatalogEntry, options?: { skipYaml?: boolea
     );
 
     for (const d of entry.datasets) {
+      // 既存チェック: 新規データセットのみFTSインデックスに追加する
+      // (既存データセットのFTS更新は rebuildIndex() で対応)
       const existing = db.prepare("SELECT 1 FROM datasets WHERE source_id = ? AND id = ?").get(s.id, d.id);
       const tagsJson = JSON.stringify(d.tags);
 
@@ -212,13 +275,18 @@ export function registerEntry(entry: CatalogEntry, options?: { skipYaml?: boolea
     return `SQLite: ${newCount} 件追加`;
   }
 
-  // YAMLにも書き出し
   const yamlResult = saveYaml(entry);
 
   return `SQLite: ${newCount} 件追加, ${yamlResult}`;
 }
 
-/** YAMLファイルに保存 (カテゴリ別サブディレクトリ) */
+/**
+ * YAMLファイルに保存する。
+ * ファイルパス: sources/{category}/{source_id}.yaml
+ *
+ * 既存ファイルがある場合は、新規データセットのみ追記する (ID重複排除)。
+ * カテゴリ別のサブディレクトリがなければ自動作成する。
+ */
 function saveYaml(entry: CatalogEntry): string {
   const categoryDir = path.join(SOURCES_DIR, entry.source.category);
   if (!fs.existsSync(categoryDir)) {
@@ -227,6 +295,7 @@ function saveYaml(entry: CatalogEntry): string {
 
   const filePath = path.join(categoryDir, `${entry.source.id}.yaml`);
 
+  // 既存ファイルがあればデータセットをマージ
   if (fs.existsSync(filePath)) {
     const existing = parse(fs.readFileSync(filePath, "utf-8")) as CatalogEntry;
     const existingIds = new Set(existing.datasets.map((d) => d.id));
@@ -240,7 +309,11 @@ function saveYaml(entry: CatalogEntry): string {
   return `YAML: ${filePath} を新規作成 (${entry.datasets.length} 件)`;
 }
 
-/** カタログの統計情報 */
+// =============================================================================
+// 統計・詳細取得
+// =============================================================================
+
+/** カタログの統計情報を集計する。ソース数、データセット数、カテゴリ別内訳 */
 export function getCatalogStats(): { sources: number; datasets: number; categories: Record<string, number> } {
   const db = getDb();
 
@@ -256,7 +329,10 @@ export function getCatalogStats(): { sources: number; datasets: number; categori
   return { sources: sourceCount, datasets: datasetCount, categories };
 }
 
-/** 特定ソースの詳細を取得 */
+/**
+ * 特定ソースの詳細情報を取得する。
+ * ソースが見つからない場合は null を返す。
+ */
 export function getSourceDetail(sourceId: string): { source: Source; datasets: Dataset[] } | null {
   const db = getDb();
 

@@ -1,6 +1,13 @@
+/**
+ * カタログ統計ツール。
+ * ソース数、データセット数、カテゴリ別内訳のサマリーを返す。
+ *
+ * 旧 list_catalog ツールの代替。全件返すとLLMのコンテキストを圧迫するため、
+ * 統計サマリーのみ返すように分離された。
+ * 個別ソースの詳細は get_source_detail ツールで取得する。
+ */
 import { getCatalogStats } from "../catalog.js";
 
-/** カタログの統計サマリーを返す */
 export function catalogStatsTool(): string {
   const stats = getCatalogStats();
 

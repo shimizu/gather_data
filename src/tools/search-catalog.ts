@@ -1,3 +1,8 @@
+/**
+ * カタログ検索ツール。
+ * エージェントが最初に呼ぶツール。ローカルカタログをFTS5で検索する。
+ * 該当なしの場合は「Web検索を試してください」と返し、エージェントに次の行動を促す。
+ */
 import { searchCatalog } from "../catalog.js";
 
 export function searchCatalogTool(query: string, limit = 10): string {
@@ -7,6 +12,7 @@ export function searchCatalogTool(query: string, limit = 10): string {
     return `カタログに「${query}」に該当するデータセットはありませんでした。Web検索を試してください。`;
   }
 
+  // LLM が解釈しやすいテキスト形式で返す
   return results
     .map(
       (r, i) =>

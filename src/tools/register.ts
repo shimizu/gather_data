@@ -1,9 +1,14 @@
+/**
+ * カタログ登録ツール。
+ * エージェントがWeb検索で発見した情報を構造化してカタログに登録する。
+ *
+ * 入力は CatalogEntry 形式のJSON文字列。
+ * Zodでバリデーションしてから catalog.registerEntry() で SQLite + YAML に同時書き込みする。
+ * バリデーションエラー時はエラーメッセージを返し、LLMに再試行を促す。
+ */
 import { CatalogEntrySchema } from "../types.js";
 import { registerEntry } from "../catalog.js";
 
-/**
- * データソース情報をカタログに登録する (SQLite + YAML 同時書き込み)
- */
 export function registerToCatalogTool(entryJson: string): string {
   try {
     const data = JSON.parse(entryJson);

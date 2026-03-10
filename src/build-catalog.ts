@@ -1,3 +1,9 @@
+/**
+ * YAML → SQLite インデックスの手動再構築スクリプト。
+ *
+ * YAMLを手動で編集・追加した後に実行する。
+ * 実行: npm run build:catalog
+ */
 import { rebuildIndex } from "./catalog.js";
 import { closeDb } from "./db.js";
 

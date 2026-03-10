@@ -1,6 +1,12 @@
+/**
+ * ソース詳細取得ツール。
+ * 特定のソースIDに紐づく全情報 (ソース情報 + 全データセット) を返す。
+ *
+ * catalog_stats で全体像を把握した後、特定ソースを深掘りする用途で使う。
+ * これにより全件返す必要がなく、LLMのコンテキストを節約できる。
+ */
 import { getSourceDetail } from "../catalog.js";
 
-/** 特定ソースの詳細情報を返す */
 export function getSourceDetailTool(sourceId: string): string {
   const detail = getSourceDetail(sourceId);
 
