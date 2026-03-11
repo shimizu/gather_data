@@ -1,0 +1,26 @@
+source:
+  id: acled
+  name: ACLED (Armed Conflict Location & Event Data Project)
+  url: https://acleddata.com
+  description: 世界各国の武力紛争・抗議活動のリアルタイムデータとモニタリング。中東地域の軍事関連イベントも含む。
+  provider: ACLED
+  category: international
+  formats:
+    - csv
+    - json
+    - api
+datasets:
+  - id: acled_conflict_data
+    name: ACLED Conflict Data
+    description: 世界各国の武力紛争、抗議活動、政治暴力に関するリアルタイムデータ。中東地域の軍事施設関連イベントも含む。地理座標付き。
+    tags:
+      - 紛争
+      - 軍事
+      - 中東
+      - 地理情報
+      - 座標
+      - イベント
+    url: https://acleddata.com/data-export-tool/
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: 軍事基地の固定的な位置データではないが、軍事関連イベントの地理座標を提供。API利用可能。

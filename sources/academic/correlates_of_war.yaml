@@ -1,0 +1,36 @@
+source:
+  id: correlates_of_war
+  name: Correlates of War Project
+  url: https://correlatesofwar.org
+  description: 国際関係分野の定量的データプロジェクト。戦争、同盟、軍事力、外交関係など多様なデータセットを提供。
+  provider: Correlates of War Project
+  category: academic
+  formats:
+    - csv
+    - stata
+    - spss
+datasets:
+  - id: cow_formal_alliances
+    name: COW Formal Alliances Dataset
+    description: 1816年以降の各国間の正式な軍事同盟データ（相互防衛協定、不可侵条約、協商など）
+    tags:
+      - 同盟
+      - 軍事協定
+      - 国際関係
+      - 歴史データ
+    url: https://correlatesofwar.org/data-sets/
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: 軍事基地の位置データではないが、軍事協力関係の分析に有用
+  - id: cow_national_capabilities
+    name: COW National Material Capabilities
+    description: 各国の国力指標（軍事支出、軍事人員、エネルギー消費など）
+    tags:
+      - 軍事力
+      - 国力
+      - 統計
+      - 比較データ
+    url: https://correlatesofwar.org/data-sets/
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: CINC指標として広く利用される国力データ

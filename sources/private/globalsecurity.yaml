@@ -1,0 +1,23 @@
+source:
+  id: globalsecurity
+  name: GlobalSecurity.org
+  url: https://www.globalsecurity.org
+  description: 軍事・安全保障関連の包括的な情報サイト。世界各国の軍事施設、兵器システム、紛争に関する詳細情報を提供。
+  provider: GlobalSecurity.org
+  category: private
+  formats:
+    - html
+datasets:
+  - id: globalsecurity_military_facilities
+    name: GlobalSecurity Military Facilities Database
+    description: 世界各国の軍事施設に関する包括的な情報データベース。中東地域の米軍基地情報も含む。
+    tags:
+      - 軍事基地
+      - 軍事施設
+      - 中東
+      - アメリカ
+      - 情報
+    url: https://www.globalsecurity.org/military/world/gulf/
+    last_confirmed: 2026-03-11
+    access_method: scrape
+    notes: 構造化されたデータセットではなく、ウェブページ形式。地理座標の系統的な提供はなし。
