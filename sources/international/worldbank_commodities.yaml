@@ -1,0 +1,37 @@
+source:
+  id: worldbank_commodities
+  name: World Bank Commodity Markets
+  url: https://www.worldbank.org/en/research/commodity-markets
+  description: 世界銀行が提供する商品価格データ。石油を含むエネルギー、農産品、金属の月次・年次価格データと予測を提供。Pink Sheetデータとして有名。
+  provider: World Bank
+  category: international
+  formats:
+    - xlsx
+    - csv
+datasets:
+  - id: worldbank_oil_prices
+    name: World Bank Oil Price Data
+    description: 世界銀行が収集する石油価格データ。WTI、Brent、Dubai原油価格の月次・年次履歴データ
+    tags:
+      - 石油価格
+      - 原油価格
+      - WTI
+      - Brent
+      - oil price
+      - crude oil
+    url: https://www.worldbank.org/en/research/commodity-markets
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: Pink Sheet Dataとして月次更新。1960年からの長期履歴データ
+  - id: worldbank_commodity_outlook
+    name: Commodity Markets Outlook
+    description: 石油を含む商品価格の見通しと分析レポート。半年ごとに発行され、価格予測も含む
+    tags:
+      - 石油価格予測
+      - 商品市場見通し
+      - oil forecast
+      - commodity outlook
+    url: https://www.worldbank.org/en/research/commodity-markets
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: 半年ごと（4月・10月）更新。PDF形式のレポートとExcelデータファイル

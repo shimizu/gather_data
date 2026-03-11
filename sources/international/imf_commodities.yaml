@@ -1,0 +1,36 @@
+source:
+  id: imf_commodities
+  name: IMF Primary Commodity Prices
+  url: https://www.imf.org/en/Research/commodity-prices
+  description: 国際通貨基金が提供する基礎商品価格データ。石油を含むエネルギー商品の月次価格指数と市場価格を提供。
+  provider: International Monetary Fund (IMF)
+  category: international
+  formats:
+    - xlsx
+    - csv
+datasets:
+  - id: imf_oil_prices
+    name: IMF Oil Price Index and Market Prices
+    description: IMFが算出する石油価格指数と市場価格。米ドル建てとSDR建ての両方を提供
+    tags:
+      - 石油価格
+      - 原油価格
+      - 価格指数
+      - oil price index
+      - petroleum price
+    url: https://www.imf.org/en/Research/commodity-prices
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: 月次更新。2000年からのデータ。data.imf.orgでも利用可能
+  - id: imf_commodity_portal
+    name: IMF Commodity Data Portal
+    description: 68の商品（エネルギー、農業、肥料、金属）の価格を可視化・チャート化できるインタラクティブポータル
+    tags:
+      - 商品価格
+      - データ可視化
+      - commodity portal
+      - interactive data
+    url: https://www.imf.org/en/Research/commodity-prices
+    last_confirmed: 2026-03-11
+    access_method: api
+    notes: インタラクティブなデータポータル。チャート作成、データ共有、ダウンロード機能

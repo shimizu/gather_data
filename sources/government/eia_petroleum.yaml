@@ -1,0 +1,51 @@
+source:
+  id: eia_petroleum
+  name: U.S. Energy Information Administration - Petroleum & Other Liquids
+  url: https://www.eia.gov/petroleum/data.php
+  description: 米国エネルギー情報局が提供する石油・液体燃料に関する包括的データ。価格、生産、精製、輸出入、在庫、消費などの詳細統計を提供。
+  provider: U.S. Energy Information Administration (EIA)
+  category: government
+  formats:
+    - csv
+    - xlsx
+    - xml
+    - json
+datasets:
+  - id: eia_petroleum_prices
+    name: Petroleum Prices
+    description: ガソリン、ディーゼル、暖房油、原油のスポット価格、先物価格、小売価格など包括的な石油価格データ
+    tags:
+      - 石油価格
+      - 原油価格
+      - ガソリン価格
+      - oil price
+      - petroleum price
+    url: https://www.eia.gov/petroleum/data.php#prices
+    last_confirmed: 2026-03-11
+    access_method: api
+    notes: 日次、週次、月次、年次データが利用可能。APIとダウンロード両方に対応
+  - id: eia_petroleum_trade
+    name: Petroleum Imports/Exports
+    description: 原油・石油製品の輸出入統計。国別、地域別の詳細データを含む
+    tags:
+      - 石油輸出入
+      - 原油貿易
+      - petroleum trade
+      - oil imports
+      - oil exports
+    url: https://www.eia.gov/petroleum/data.php#imports
+    last_confirmed: 2026-03-11
+    access_method: api
+    notes: 月次・年次データ。PAD District別、国別の詳細統計
+  - id: eia_petroleum_international
+    name: International Petroleum Statistics
+    description: 世界各国の石油統計データ。生産、消費、輸出入データを国別・地域別に提供
+    tags:
+      - 国際石油統計
+      - 各国石油データ
+      - international oil
+      - country petroleum
+    url: https://www.eia.gov/international/data/world
+    last_confirmed: 2026-03-11
+    access_method: api
+    notes: 年次、四半期、月次データ。詳細な国別・地域別統計

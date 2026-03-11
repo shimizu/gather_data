@@ -1,0 +1,36 @@
+source:
+  id: iea_statistics
+  name: IEA Energy Data Centre
+  url: https://www.iea.org/data-and-statistics
+  description: 国際エネルギー機関が提供する世界最大級のエネルギー統計データベース。石油を含む包括的なエネルギーデータを提供。
+  provider: International Energy Agency (IEA)
+  category: international
+  formats:
+    - csv
+    - xlsx
+datasets:
+  - id: iea_oil_statistics
+    name: IEA Oil Statistics
+    description: IEAが提供する石油統計。世界150カ国以上の石油供給・需要・貿易データ。1971年からの時系列データ
+    tags:
+      - 石油統計
+      - エネルギー統計
+      - oil statistics
+      - petroleum data
+      - energy data
+    url: https://www.iea.org/data-and-statistics
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: 一部データは無料、詳細データは有料サービス。月次・年次データ
+  - id: iea_monthly_oil_data
+    name: IEA Monthly Oil Data Service (MODS)
+    description: IEAの月次石油データサービス。OECD諸国の石油統計を月次で提供
+    tags:
+      - 月次石油データ
+      - OECD石油統計
+      - monthly oil data
+      - MODS
+    url: https://www.iea.org/data-and-statistics
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: 有料サービス。OECD諸国中心の詳細月次データ
