@@ -1,0 +1,24 @@
+source:
+  id: imo_international
+  name: International Maritime Organization (IMO)
+  url: https://www.imo.org
+  description: 国連の専門機関として海運の安全・セキュリティ、海洋・大気汚染防止を担当。ホルムズ海峡での海員死亡事案等に関する声明や国際海事条約・規制情報を提供。
+  provider: IMO (国際海事機関)
+  category: international
+  formats:
+    - pdf
+    - web
+datasets:
+  - id: imo_strait_hormuz_statements
+    name: ホルムズ海峡に関する声明・報告
+    description: IMO事務局長によるホルムズ海峡情勢に関する公式声明、海員の安全に関する懸念表明、中東情勢の海運への影響に関する分析等。
+    tags:
+      - strait of hormuz
+      - maritime safety
+      - seafarer safety
+      - middle east
+      - statements
+    url: https://www.imo.org
+    last_confirmed: 2026-03-11
+    access_method: scrape
+    notes: 定量的なトラフィックデータではなく、政策・安全面での公式見解が中心。海峡情勢の公式分析として価値あり。

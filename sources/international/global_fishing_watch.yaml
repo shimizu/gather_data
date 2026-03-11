@@ -1,0 +1,42 @@
+source:
+  id: global_fishing_watch
+  name: Global Fishing Watch
+  url: https://globalfishingwatch.org
+  description: 衛星データ、船舶GPSデータ、機械学習を組み合わせて海上の産業活動を分析・監視する国際的なプラットフォーム。AIS（自動船舶識別装置）データを含む船舶追跡情報を無償公開している。
+  provider: Global Fishing Watch (国際非営利機関)
+  category: international
+  formats:
+    - csv
+    - json
+    - api
+datasets:
+  - id: gfw_vessel_tracking
+    name: 船舶追跡・AISデータ
+    description: 全世界の船舶のAIS（自動船舶識別装置）データ、漁業活動、積み替え活動、停泊地情報等を含む包括的な海洋活動データセット。ホルムズ海峡を含む世界中の海域の船舶動向を追跡可能。
+    tags:
+      - AIS
+      - vessel tracking
+      - maritime
+      - shipping
+      - fishing
+      - global
+      - strait of hormuz
+    url: https://globalfishingwatch.org/data
+    last_confirmed: 2026-03-11
+    access_method: api
+    notes: 無料登録が必要。利用規約に同意とフォローアップ調査への協力が求められる。GitHubでコードとデータセットを公開。
+  - id: gfw_api_tools
+    name: データアクセスツール・API
+    description: PythonとRでのAPIクライアント、船舶分類モデル、データ分析ツール等を提供。研究者や開発者がGlobal Fishing
+      Watchのデータに効率的にアクセス・分析するためのオープンソースツール群。
+    tags:
+      - API
+      - python
+      - R
+      - tools
+      - open source
+      - github
+    url: https://github.com/GlobalFishingWatch
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: GitHubで170以上のリポジトリを公開。船舶分類、軌跡分割、イベント検出等の高度な分析機能を含む。

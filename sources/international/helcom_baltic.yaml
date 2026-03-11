@@ -1,0 +1,25 @@
+source:
+  id: helcom_baltic
+  name: HELCOM (Helsinki Commission)
+  url: https://www.helcom.fi
+  description: バルト海の海洋環境保護に関する国際委員会。バルト海地域の海事活動、AIS交通統計、船舶事故データ、環境監視データ等を提供している。
+  provider: HELCOM (バルト海海洋環境保護委員会)
+  category: international
+  formats:
+    - pdf
+    - excel
+    - web
+datasets:
+  - id: helcom_ais_statistics
+    name: HELCOM AIS交通統計
+    description: バルト海におけるAIS（自動船舶識別装置）による船舶交通の統計データ。船舶の移動パターン、交通密度、船種別分析等を含む。
+    tags:
+      - AIS
+      - baltic sea
+      - shipping
+      - maritime statistics
+      - traffic
+    url: https://www.helcom.fi/baltic-sea-trends/maritime-activities/
+    last_confirmed: 2026-03-11
+    access_method: download
+    notes: バルト海特化だがホルムズ海峡等の国際海峡研究の参考事例として有用。年次報告書形式での公開。
