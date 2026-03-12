@@ -6,6 +6,8 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "build:catalog": "tsx src/build-catalog.ts",
+    "build:site": "tsx src/build-site.ts",
+    "preview": "npx serve dist",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

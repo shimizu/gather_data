@@ -1,195 +1,51 @@
-# データカタログ - アーキテクチャ設計
+# データカタログ Webサイト — 実装計画
 
 ## 目的
 
-「◯◯に関連するデータを探して」と指示すると、AIエージェントが：
-1. Webを検索してデータソースを発見する
-2. 発見した情報を構造化してカタログに登録する
-3. 次回以降はカタログから即座に回答できる（知識が蓄積される）
+`sources/` に登録済みのデータセットを閲覧できる静的Webサイトを構築し、GitHub Pages（gh-pages）でデプロイする。
 
 ---
 
-## 現在のスケーラビリティ課題
+## 設計方針
 
-### 問題1: 毎回全YAMLを読み込んでいる
+### ビルド時にYAMLを読み込み、静的HTMLを生成する
 
-`loadCatalog()` が呼ばれるたびに `sources/*.yaml` を全ファイル読み込み・パースしている。
-ファイル数が数十〜数百になるとI/O・パースコストが無視できなくなる。
+```
+sources/**/*.yaml  →  ビルドスクリプト  →  dist/
+                        (YAML→JSON変換)      ├── index.html
+                                              ├── style.css
+                                              ├── app.js
+                                              └── catalog.json
+```
 
-### 問題2: フラットなディレクトリ構造
+- **フレームワーク不使用**: Vanilla HTML/CSS/JS で軽量に構築
+- **catalog.json**: ビルド時にYAMLを全件読み込みJSON化。ブラウザ側はこのJSONをfetchして描画
+- **SPA構成**: 単一HTMLでフィルタ・検索・詳細表示を実現（GitHub Pagesとの相性が良い）
+- **レスポンシブ対応**: モバイルでも閲覧可能
 
-`sources/` 直下に全ファイルが並ぶため、数百ファイルになると見通しが悪い。
+### なぜフレームワークを使わないか
 
-### 問題3: 全文検索が線形スキャン
-
-全データセットの `name`, `description`, `tags` を毎回ループで走査している。
-データセット数が増えるとO(N)で遅くなる。
-
-### 問題4: エージェントのコンテキスト圧迫
-
-`list_catalog` ツールがカタログ全体をテキストで返すため、
-カタログが大きくなるとLLMのコンテキストウィンドウを圧迫する。
+- データセット数は数十〜数百件（JSONで十分扱える規模）
+- 依存ゼロでビルドパイプラインがシンプル
+- 既存の `yaml` パッケージと `src/types.ts` をビルドスクリプトで再利用可能
 
 ---
 
-## 解決策: SQLiteインデックスの導入
+## 機能要件
 
-YAMLをマスターデータ（人間が読める・Gitで管理できる）として維持しつつ、
-SQLiteをインデックスとして併用する。
+### メインビュー（一覧）
+- カテゴリ別タブ or フィルタ（government / international / private / academic）
+- テキスト検索（名前・説明・タグを対象）
+- カード形式でデータセット一覧表示
+- 各カードに: ソース名、データセット名、説明（truncate）、タグ、アクセス方法バッジ
 
-```
-sources/*.yaml  ← マスターデータ (人間が編集可能、Git管理)
-       ↓ ビルド
-catalog.db (SQLite)  ← 検索用インデックス (自動生成、.gitignore)
-       ↑ 登録時に同時書き込み
-エージェント
-```
+### 詳細ビュー
+- データセットの全情報表示
+- ソース情報（提供元、URL、API有無、フォーマット）
+- 外部リンク（ソースURL、データセットURL）
 
-### なぜSQLiteか
-
-- **依存が軽い**: better-sqlite3 は単一バイナリ、外部サービス不要
-- **FTS5 (全文検索)**: 日本語トークナイザ含め高速な全文検索をネイティブ対応
-- **ゼロ設定**: ファイル1つで完結、サーバー不要
-- **十分なスケール**: 数万〜数十万レコードでも問題ない
-
----
-
-## 全体像
-
-```
-ユーザー
-  │  「人口に関するデータを探して」
-  ↓
-エージェントコア (Claude API + ツール)
-  │
-  ├─① カタログ検索 (SQLite FTS5)
-  │    ヒットあり → 結果を返す
-  │
-  ├─② Web検索 ← カタログになければWebを探す
-  │    ├── Google検索 / データポータル検索
-  │    ├── 見つけたページの内容を読み取り
-  │    └── データセット情報を構造化して抽出
-  │
-  └─③ カタログ登録
-       ├── SQLiteに書き込み (即座に検索可能)
-       └── sources/*.yaml にも書き出し (永続化・Git管理)
-```
-
----
-
-## SQLiteスキーマ
-
-```sql
--- ソース（サイト）テーブル
-CREATE TABLE sources (
-  id          TEXT PRIMARY KEY,
-  name        TEXT NOT NULL,
-  url         TEXT NOT NULL,
-  description TEXT NOT NULL,
-  provider    TEXT NOT NULL,
-  category    TEXT NOT NULL CHECK(category IN ('government','international','private','academic')),
-  api_json    TEXT,          -- API情報をJSONで格納
-  formats     TEXT NOT NULL, -- JSON配列 ["csv","json"]
-  created_at  TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
--- データセットテーブル
-CREATE TABLE datasets (
-  id               TEXT NOT NULL,
-  source_id        TEXT NOT NULL REFERENCES sources(id),
-  name             TEXT NOT NULL,
-  description      TEXT NOT NULL,
-  tags             TEXT NOT NULL, -- JSON配列 ["人口","世帯"]
-  url              TEXT NOT NULL,
-  update_frequency TEXT,
-  last_confirmed   TEXT NOT NULL,
-  access_method    TEXT NOT NULL CHECK(access_method IN ('api','download','scrape')),
-  notes            TEXT,
-  created_at       TEXT NOT NULL DEFAULT (datetime('now')),
-  PRIMARY KEY (source_id, id)
-);
-
--- 全文検索インデックス (FTS5)
-CREATE VIRTUAL TABLE datasets_fts USING fts5(
-  name,
-  description,
-  tags,
-  source_name,
-  content='datasets',
-  content_rowid='rowid',
-  tokenize='unicode61'
-);
-```
-
-### ポイント
-
-- `datasets_fts` で `name`, `description`, `tags`, `source_name` を全文検索
-- `tags` はJSON配列をスペース区切りテキストに変換してFTSに投入
-- YAML → SQLite のビルドコマンドで再構築可能 (`npm run build:catalog`)
-- 新規登録時はSQLite + YAMLの両方に同時書き込み
-
----
-
-## エージェントのツール定義
-
-| ツール名 | 説明 | 入力 | 出力 |
-|----------|------|------|------|
-| search_catalog | SQLite FTS5でカタログを検索 | query: string, limit?: number | マッチしたデータセット一覧 (上位N件) |
-| web_search | Webを検索してデータソース候補を取得 | query: string | 検索結果（URL+スニペット） |
-| fetch_page | 指定URLのページ内容を取得 | url: string | ページのテキスト内容 |
-| register_to_catalog | データセット情報をカタログに登録 | source + dataset情報 | 登録結果 |
-| catalog_stats | カタログの統計情報を表示 | なし | ソース数・データセット数・カテゴリ内訳 |
-| get_source_detail | 特定ソースの詳細情報を取得 | source_id: string | ソース+全データセット |
-
-### 変更点
-
-- `list_catalog` → `catalog_stats` + `get_source_detail` に分離
-  - 全件返すのではなく、統計サマリーか個別詳細を返す
-  - LLMのコンテキストを圧迫しない
-- `search_catalog` は `limit` パラメータで件数制御
-
----
-
-## カタログのデータ構造 (YAML: 変更なし)
-
-```yaml
-# sources/government/estat.yaml
-source:
-  id: estat
-  name: e-Stat (政府統計の総合窓口)
-  url: https://www.e-stat.go.jp/
-  description: 日本の政府統計を横断的に検索・閲覧できるポータルサイト
-  provider: 総務省統計局
-  category: government
-  api:
-    available: true
-    base_url: https://api.e-stat.go.jp/rest/3.0/app/
-    auth:
-      type: api_key
-      key_env: ESTAT_API_KEY
-    docs_url: https://www.e-stat.go.jp/api/
-  formats:
-    - csv
-    - json
-    - xml
-
-datasets:
-  - id: population_census
-    name: 国勢調査 人口等基本集計
-    description: 5年ごとの全数調査による日本の人口・世帯の基本統計
-    tags:
-      - 人口
-      - 世帯
-      - 国勢調査
-      - 都道府県
-      - 市区町村
-    url: https://www.e-stat.go.jp/stat-search/files?toukei=00200521
-    update_frequency: 5years
-    last_confirmed: 2026-03-10
-    access_method: api
-    notes: appIdが必要
-```
+### 統計ダッシュボード（ヘッダー）
+- 総ソース数、総データセット数、カテゴリ別件数
 
 ---
 
@@ -197,92 +53,170 @@ datasets:
 
 ```
 gather_data/
-├── plan.md
-├── package.json
-├── tsconfig.json
+├── site/                        # Webサイトソース（新規）
+│   ├── index.html               # メインHTML
+│   ├── style.css                # スタイルシート
+│   └── app.js                   # クライアントサイドJS
 ├── src/
-│   ├── index.ts              # エントリポイント (対話ループ)
-│   ├── agent.ts              # エージェントコア (Claude API + ツール実行)
-│   ├── db.ts                 # SQLite初期化・マイグレーション
-│   ├── catalog.ts            # カタログ読み書き (SQLite + YAML)
-│   ├── types.ts              # 型定義 (Zod schemas)
-│   └── tools/
-│       ├── search-catalog.ts     # FTS5検索
-│       ├── web-search.ts         # Web検索
-│       ├── fetch-page.ts         # ページ取得
-│       ├── register.ts           # カタログ登録 (DB + YAML同時書き込み)
-│       ├── catalog-stats.ts      # 統計サマリー
-│       └── get-source-detail.ts  # ソース詳細取得
-├── sources/                  # マスターデータ (カテゴリ別サブディレクトリ)
-│   ├── government/
-│   │   ├── estat.yaml
-│   │   └── data_go_jp.yaml
-│   ├── international/
-│   │   ├── worldbank.yaml
-│   │   └── imf.yaml
-│   ├── private/
-│   │   └── kaggle.yaml
-│   └── academic/
-├── catalog.db                # SQLiteインデックス (.gitignore)
-└── tests/
-    ├── catalog.test.ts
-    └── search-catalog.test.ts
+│   └── build-site.ts            # ビルドスクリプト（新規）
+├── dist/                        # ビルド出力（.gitignore済み）
+│   ├── index.html
+│   ├── style.css
+│   ├── app.js
+│   └── catalog.json             # YAML→JSON変換データ
+└── .github/
+    └── workflows/
+        └── deploy.yml           # GitHub Pages デプロイ
 ```
-
-### sources/ のカテゴリ別サブディレクトリ
-
-- `government/` - 政府系 (e-Stat, RESAS, data.go.jp, 国土数値情報 等)
-- `international/` - 国際機関 (World Bank, IMF, OECD, UN 等)
-- `private/` - 民間 (Kaggle, 企業IR 等)
-- `academic/` - 学術 (論文データ、大学公開データ 等)
 
 ---
 
-## CLIコマンド
+## 実装ステップ
+
+### Step 1: ビルドスクリプト `src/build-site.ts`
+
+- `sources/**/*.yaml` を全件読み込み
+- Zodスキーマ（`src/types.ts`）でバリデーション
+- `catalog.json` として `dist/` に出力
+- `site/` の静的ファイル（HTML/CSS/JS）を `dist/` にコピー
 
 ```bash
-# 対話モード (メイン)
-npm start
+npm run build:site   # → dist/ に静的サイト生成
+```
 
-# カタログのビルド (YAML → SQLite再構築)
-npm run build:catalog
+### Step 2: 静的サイト `site/`
 
-# 統計表示
-npm run stats
+#### `site/index.html`
+- セマンティックHTML構造
+- ヘッダー: プロジェクト名 + 統計サマリー
+- フィルタバー: カテゴリフィルタ + 検索ボックス
+- カードグリッド: データセット一覧
+- モーダル or 詳細パネル: データセット詳細
+
+#### `site/style.css`
+- CSS Grid / Flexbox によるレスポンシブレイアウト
+- カテゴリ別の色分け
+- ダークモード対応（`prefers-color-scheme`）
+
+#### `site/app.js`
+- `catalog.json` をfetchして描画
+- クライアントサイド検索（名前・説明・タグをフィルタ）
+- カテゴリフィルタ
+- 詳細モーダル表示
+- URL hash によるステート管理（共有可能なリンク）
+
+### Step 3: package.json にスクリプト追加
+
+```json
+{
+  "scripts": {
+    "build:site": "tsx src/build-site.ts",
+    "preview": "npx serve dist"
+  }
+}
+```
+
+### Step 4: GitHub Actions ワークフロー
+
+`.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run build:site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
 ```
 
 ---
 
-## 技術スタック
+## catalog.json のスキーマ
 
-| 要素 | 選定 | 理由 |
-|------|------|------|
-| 言語 | TypeScript 5.x | 型安全 |
-| ランタイム | Node.js 22+ | LTS |
-| LLM | Claude API (Anthropic SDK) | tool use対応、日本語に強い |
-| DB | better-sqlite3 | 同期API、FTS5対応、サーバー不要 |
-| CLI対話 | readline (標準) | 依存なし |
-| バリデーション | Zod | スキーマ→型推論 |
-| YAML | yaml (npm) | YAML 1.2準拠 |
-| テスト | Vitest | 高速 |
+```typescript
+// ビルド時に生成されるJSONの構造
+interface CatalogData {
+  generatedAt: string;           // ISO日付
+  stats: {
+    totalSources: number;
+    totalDatasets: number;
+    byCategory: Record<string, number>;
+  };
+  sources: Array<{
+    id: string;
+    name: string;
+    url: string;
+    description: string;
+    provider: string;
+    category: string;
+    formats: string[];
+    api?: {
+      available: boolean;
+      base_url?: string;
+      docs_url?: string;
+    };
+    datasets: Array<{
+      id: string;
+      name: string;
+      description: string;
+      tags: string[];
+      url: string;
+      update_frequency?: string;
+      last_confirmed: string;
+      access_method: string;
+      notes?: string;
+    }>;
+  }>;
+}
+```
+
+---
+
+## デザイン方針
+
+- **カラーパレット**: カテゴリ別に色を割り当て
+  - government: 青系（`#2563eb`）
+  - international: 緑系（`#059669`）
+  - private: 紫系（`#7c3aed`）
+  - academic: オレンジ系（`#d97706`）
+- **タイポグラフィ**: system-ui フォントスタック
+- **カードデザイン**: 角丸 + 軽い影 + ホバーエフェクト
+- **アクセシビリティ**: セマンティックHTML、適切なコントラスト比
 
 ---
 
 ## 実装の優先順位
 
-1. **SQLite導入** (db.ts) - スキーマ作成、FTS5設定
-2. **catalog.ts 改修** - SQLite読み書き + YAML同期
-3. **ツール改修** - search-catalog をFTS5ベースに、list→stats+detail分離
-4. **sources/ カテゴリ分け** - 既存YAMLをサブディレクトリに移動
-5. **build:catalog コマンド** - YAML → SQLite再構築スクリプト
-6. **テスト更新**
-
----
-
-## 将来の拡張
-
-- **MCP Server化**: このエージェントをMCP Serverとして公開 → Claude Codeから直接呼べる
-- **データダウンロード機能**: カタログに登録済みのデータを実際にダウンロード
-- **定期巡回**: カタログのURLが生きているか定期チェック
-- **カタログの共有**: sources/をGitリポジトリとして公開、コミュニティで育てる
-- **ベクトル検索**: Embeddingによるセマンティック検索の追加 (SQLite + sqlite-vss)
+1. **ビルドスクリプト** (`src/build-site.ts`) — YAML→JSON変換が全体の基盤
+2. **HTML/CSS** (`site/index.html`, `site/style.css`) — 構造とスタイル
+3. **JS** (`site/app.js`) — インタラクション（検索・フィルタ・詳細表示）
+4. **GitHub Actions** (`.github/workflows/deploy.yml`) — 自動デプロイ
+5. **改善**: パフォーマンス最適化、OGP設定等
