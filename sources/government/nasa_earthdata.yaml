@@ -1,0 +1,75 @@
+source:
+  id: nasa_earthdata
+  name: NASA Earthdata
+  url: https://earthdata.nasa.gov
+  description: NASAの地球科学データシステム（ESDS）プログラムが提供する地球観測データの総合ポータル。ペタバイト規模の地球科学データアーカイブへのオープンアクセスを提供し、研究者や意思決定者の地球理解と保護を支援。大気、生物圏、気候、雪氷圏、陸面、海洋、固体地球、太陽地球相互作用、陸水圏の各分野のデータを統合。
+  provider: NASA（米国航空宇宙局）
+  category: government
+  formats:
+    - HDF5
+    - NetCDF
+    - GeoTIFF
+    - CSV
+    - JSON
+    - KML
+datasets:
+  - id: earthdata_search
+    name: Earthdata Search
+    description: NASA地球科学データの発見、検索、比較、可視化、アクセスを可能にする統合検索プラットフォーム。数千のデータセットに対して空間・時間・テーマ別検索が可能。
+    tags:
+      - search
+      - discovery
+      - NASA
+      - earth_science
+      - satellite
+      - global
+    url: https://search.earthdata.nasa.gov
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: 無料のEarthdataアカウントが必要。APIアクセスも可能。
+  - id: earthdata_gis
+    name: Earthdata GIS
+    description: クラウドネイティブでGIS対応のNASA地球科学データとサービスの配信リソース。200以上のラスターおよびフィーチャー地理空間サービス、テーマ別アプリケーション、ArcGIS
+      StoryMapsを提供。
+    tags:
+      - GIS
+      - cloud_native
+      - geospatial
+      - services
+      - ArcGIS
+      - NASA
+    url: https://earthdata.nasa.gov
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: クラウドベースのGISサービス。ArcGIS等との統合が可能。
+  - id: modis_data
+    name: MODIS Data Products
+    description: Terra・Aqua衛星搭載のMODISセンサーによる地球観測データプロダクト。陸面、海洋、大気の様々な物理量を全球規模で継続観測。250m〜1kmの空間解像度で日次〜月次の時間解像度を提供。
+    tags:
+      - MODIS
+      - Terra
+      - Aqua
+      - global
+      - land
+      - ocean
+      - atmosphere
+      - time_series
+    url: https://earthdata.nasa.gov
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: 2000年から継続する長期時系列データ。様々な解析レベルのプロダクトを提供。
+  - id: grace_gravity
+    name: GRACE/GRACE-FO Gravity Data
+    description: GRACE（Gravity Recovery and Climate
+      Experiment）とその後継GRACE-FOによる地球重力場変動データ。地下水、氷河・氷床、海面変動等の監視に活用。
+    tags:
+      - GRACE
+      - gravity
+      - groundwater
+      - ice
+      - sea_level
+      - climate
+    url: https://earthdata.nasa.gov
+    last_confirmed: 2026-03-13
+    access_method: download
+    notes: 2002年から継続する重力場変動データ。水循環・気候変動研究の重要データソース。

@@ -1,0 +1,86 @@
+source:
+  id: usgs_earthexplorer
+  name: USGS Earth Explorer
+  url: https://earthexplorer.usgs.gov
+  description: 米国地質調査所（USGS）が提供する地球観測データの検索・ダウンロードポータル。衛星画像、航空写真、デジタル標高モデル、地理空間データなど膨大なアーカイブにアクセス可能。ランドサット、MODIS、ASTER、SRTM、3DEPなどの主要データセットを網羅。
+  provider: 米国地質調査所（USGS）
+  category: government
+  formats:
+    - GeoTIFF
+    - HDF
+    - NetCDF
+    - ASCII
+    - JPEG
+    - PNG
+datasets:
+  - id: srtm_1arc_v3
+    name: SRTM 1 Arc-Second Global
+    description: シャトル
+      レーダー地形ミッションによる1弧秒（約30m）解像度全球デジタル標高モデル。北緯60度から南緯56度までをカバー。Version
+      3では水域マスクとデータ品質が改善されている。
+    tags:
+      - DEM
+      - SRTM
+      - global
+      - 30m
+      - 1_arc_second
+      - elevation
+    url: https://earthexplorer.usgs.gov
+    last_confirmed: 2026-03-13
+    access_method: download
+    notes: 無料登録が必要。5x5度タイル形式で提供。世界中で広く利用されている標準的なDEM。
+  - id: srtm_3arc
+    name: SRTM 3 Arc-Second Global
+    description: SRTM 1弧秒データを3弧秒（約90m）解像度にリサンプルしたデータセット。より軽量でネットワーク転送に適している。
+    tags:
+      - DEM
+      - SRTM
+      - global
+      - 90m
+      - 3_arc_second
+      - elevation
+    url: https://earthexplorer.usgs.gov
+    last_confirmed: 2026-03-13
+    access_method: download
+    notes: SRTM 1弧秒の低解像度版。大縮尺の解析に適している。
+  - id: usgs_3dep_1m
+    name: USGS 3DEP 1-meter DEM
+    description: 米国内の高精度1m解像度デジタル標高モデル。LiDARおよびIfSARデータから生成。米国全土を段階的にカバーする予定のプレミアムデータセット。
+    tags:
+      - DEM
+      - 3DEP
+      - USA
+      - 1m
+      - lidar
+      - high_resolution
+    url: https://earthexplorer.usgs.gov
+    last_confirmed: 2026-03-13
+    access_method: download
+    notes: 米国内のみ。最高品質のDEM。学術利用者向けに制限されている場合がある。
+  - id: usgs_3dep_10m
+    name: USGS 3DEP 1/3 Arc-Second (10m) DEM
+    description: 米国内の1/3弧秒（約10m）解像度デジタル標高モデル。National Elevation Datasetの後継として開発された高品質データセット。
+    tags:
+      - DEM
+      - 3DEP
+      - USA
+      - 10m
+      - 1/3_arc_second
+    url: https://earthexplorer.usgs.gov
+    last_confirmed: 2026-03-13
+    access_method: download
+    notes: 米国の標準高解像度DEM。NED後継データセット。
+  - id: landsat_collection2
+    name: Landsat Collection 2
+    description: 1972年から現在までのランドサット衛星画像アーカイブ。Collection 2では大気補正や幾何補正が改善され、より高品質なデータを提供。
+    tags:
+      - satellite
+      - Landsat
+      - optical
+      - multispectral
+      - time_series
+      - global
+    url: https://earthexplorer.usgs.gov
+    last_confirmed: 2026-03-13
+    access_method: download
+    notes: 50年以上の地球観測データ。無料で利用可能。多様な解析レベルのプロダクトを提供。

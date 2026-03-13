@@ -1,0 +1,42 @@
+source:
+  id: aster_gdem
+  name: ASTER Global Digital Elevation Model
+  url: https://asterweb.jpl.nasa.gov/gdem.asp
+  description: 日本のMETI（経済産業省）とNASAの共同プロジェクトによる全球デジタル標高モデル。ASTER衛星のステレオ画像から生成され、地球の陸地の99%をカバー。30m解像度で北緯83度から南緯83度までの範囲を提供。
+  provider: NASA・日本経済産業省（METI）
+  category: government
+  formats:
+    - GeoTIFF
+datasets:
+  - id: aster_gdem_v3
+    name: ASTER GDEM Version 3
+    description: ASTER衛星による全球30m解像度デジタル標高モデル第3版。北緯83度から南緯83度まで、地球陸地の99%をカバー。V1・V2から改良され、より多くのステレオペア画像を使用し、アーティファクトを削減。1x1度タイル形式で提供。
+    tags:
+      - DEM
+      - ASTER
+      - global
+      - 30m
+      - elevation
+      - stereo
+      - METI
+      - NASA
+    url: https://asterweb.jpl.nasa.gov/gdem.asp
+    last_confirmed: 2026-03-13
+    access_method: download
+    notes: NASA EarthdataまたはJapan Space
+      Systemsからダウンロード可能。無償利用可能。データにはアーティファクトが含まれる可能性があるため用途に注意が必要。
+  - id: aster_water_body
+    name: ASTER Water Body Dataset (ASTWBD)
+    description: ASTER GDEMに対応する水域データセット。海洋、河川、湖沼を識別するラスターデータ。各GDEMタイルに対応する水域タイルを提供。
+    tags:
+      - water_body
+      - ASTER
+      - global
+      - ocean
+      - river
+      - lake
+      - mask
+    url: https://asterweb.jpl.nasa.gov/gdem.asp
+    last_confirmed: 2026-03-13
+    access_method: download
+    notes: GDEM V3と同時リリース。水域マスクとして利用可能。

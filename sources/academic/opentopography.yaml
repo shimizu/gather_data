@@ -1,0 +1,134 @@
+source:
+  id: opentopography
+  name: OpenTopography
+  url: https://opentopography.org
+  description: NSFがサポートする高解像度地形データとツールのファシリティ。数十の高解像度LiDARとphotogrammetryデータセット、様々な解像度のグローバルDEMデータセット、強力な分析・可視化ツールを提供する包括的な地形データプラットフォーム。
+  provider: 米国国立科学財団（NSF）・サンディエゴ・スーパーコンピュータセンター（SDSC）
+  category: academic
+  formats:
+    - GeoTIFF
+    - ASCII
+    - KML
+    - JSON
+    - Cloud Optimized GeoTIFF
+datasets:
+  - id: srtm_gl3_90m
+    name: SRTM GL3 (Global 90m)
+    description: シャトル レーダー地形ミッション（SRTM）による全球90m解像度デジタル標高モデル。陸地の約80%をカバー。
+    tags:
+      - DEM
+      - SRTM
+      - global
+      - 90m
+      - elevation
+      - radar
+    url: https://opentopography.org/developers
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: APIキーが必要。無料で利用可能。リクエストサイズ制限あり。
+  - id: srtm_gl1_30m
+    name: SRTM GL1 (Global 30m)
+    description: シャトル レーダー地形ミッション（SRTM）による全球30m解像度デジタル標高モデル。SRTM GL3の高解像度版。
+    tags:
+      - DEM
+      - SRTM
+      - global
+      - 30m
+      - elevation
+      - radar
+    url: https://opentopography.org/developers
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: APIキーが必要。リクエストサイズは450,000 km²まで。
+  - id: alos_world3d_30m
+    name: ALOS World 3D (Global 30m)
+    description: JAXA ALOS衛星による全球30m解像度デジタル地表モデル（DSM）。高精度な地形データを提供。
+    tags:
+      - DEM
+      - DSM
+      - ALOS
+      - global
+      - 30m
+      - elevation
+      - JAXA
+    url: https://opentopography.org/developers
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: APIキーが必要。楕円体高版も利用可能。
+  - id: nasadem_30m
+    name: NASADEM (Global 30m)
+    description: NASAによる改良版SRTM DEMデータセット。SRTM GL1より品質が向上し、水域マスクやノイズ除去が改善されている。
+    tags:
+      - DEM
+      - NASADEM
+      - global
+      - 30m
+      - elevation
+      - NASA
+      - improved SRTM
+    url: https://opentopography.org/developers
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: SRTMの改良版。データ品質が向上。
+  - id: cop30_30m
+    name: Copernicus Global DSM 30m (COP30)
+    description: Copernicusプログラムによる全球30m解像度デジタル地表モデル（DSM）。TanDEM-Xミッションデータをベースとした高精度標高データ。
+    tags:
+      - DSM
+      - Copernicus
+      - global
+      - 30m
+      - elevation
+      - TanDEM-X
+      - ESA
+    url: https://opentopography.org/developers
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: ESA Copernicusプログラムの成果物。高品質DSM。
+  - id: cop90_90m
+    name: Copernicus Global DSM 90m (COP90)
+    description: Copernicusプログラムによる全球90m解像度デジタル地表モデル（DSM）。COP30の低解像度版で大領域の処理に適している。
+    tags:
+      - DSM
+      - Copernicus
+      - global
+      - 90m
+      - elevation
+      - TanDEM-X
+      - ESA
+    url: https://opentopography.org/developers
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: 大領域での利用に適したCOP30の低解像度版。
+  - id: srtm15plus_v2
+    name: "Global Bathymetry and Topography at 15 Arc Sec: SRTM15+ V2.1"
+    description: 全球の水深と地形データを15弧秒解像度（約450m）で統合したデータセット。海洋と陸地の連続的な標高データを提供。
+    tags:
+      - bathymetry
+      - topography
+      - global
+      - 15_arc_sec
+      - 450m
+      - ocean
+      - land
+    url: https://opentopography.org/developers
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: 海陸統合標高データ。リクエストサイズは125,000,000 km²まで。
+  - id: gedi_l3_1km
+    name: GEDI L3 (DTM 1000 meter)
+    description: NASA GEDIミッション（Global Ecosystem Dynamics
+      Investigation）による全球1km解像度デジタル地形モデル。森林構造と地形の高精度測定データ。
+    tags:
+      - DTM
+      - GEDI
+      - global
+      - 1km
+      - lidar
+      - forest
+      - ecosystem
+      - NASA
+    url: https://opentopography.org/developers
+    last_confirmed: 2026-03-13
+    access_method: api
+    notes: 宇宙ベースLiDARデータ。植生・生態系研究に最適。リクエストサイズは500,000,000 km²まで。
