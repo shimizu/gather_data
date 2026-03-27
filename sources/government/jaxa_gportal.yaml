@@ -1,0 +1,55 @@
+source:
+  id: jaxa_gportal
+  name: JAXA G-Portal
+  url: https://gportal.jaxa.jp
+  description: JAXA（宇宙航空研究開発機構）が提供する地球観測衛星データポータル。日本の衛星データを統合的に提供
+  provider: JAXA
+  category: government
+  formats:
+    - hdf5
+    - netcdf
+    - geotiff
+datasets:
+  - id: gportal_himawari
+    name: ひまわり8号・9号データ
+    description: 静止気象衛星ひまわりの可視・赤外画像。10分間隔の高頻度観測
+    tags:
+      - satellite
+      - himawari
+      - geostationary
+      - weather
+      - asia
+      - pacific
+    url: https://gportal.jaxa.jp
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: ユーザー登録により無料利用可能。アジア太平洋域の高頻度観測
+  - id: gportal_gcom
+    name: GCOM-C/GCOM-W データ
+    description: 水循環変動観測衛星「しずく」(GCOM-W)と気候変動観測衛星「しきさい」(GCOM-C)のデータ
+    tags:
+      - satellite
+      - gcom
+      - climate
+      - water_cycle
+      - ocean_color
+      - global
+    url: https://gportal.jaxa.jp
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: ユーザー登録により無料利用可能。気候変動・水循環研究に特化
+  - id: gportal_alos
+    name: ALOS-2 PALSAR-2 データ
+    description: 陸域観測技術衛星2号「だいち2号」のL帯SAR（PALSAR-2）データ
+    tags:
+      - satellite
+      - alos
+      - palsar
+      - sar
+      - radar
+      - disaster
+      - forest
+    url: https://gportal.jaxa.jp
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: ユーザー登録により無料利用可能。災害監視・森林監視に適用

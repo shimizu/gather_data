@@ -1,0 +1,55 @@
+source:
+  id: modis_gsfc
+  name: MODIS Web (NASA GSFC)
+  url: https://modis.gsfc.nasa.gov
+  description: NASA Goddard宇宙飛行センターが提供するMODIS衛星データポータル。Terra/Aqua衛星の全プロダクトを提供
+  provider: NASA GSFC
+  category: government
+  formats:
+    - hdf
+    - netcdf
+    - geotiff
+datasets:
+  - id: modis_atmosphere
+    name: MODIS Atmosphere Products
+    description: エアロゾル、雲、可降水量、大気プロファイルなどの大気関連プロダクト
+    tags:
+      - satellite
+      - modis
+      - atmosphere
+      - aerosol
+      - cloud
+      - global
+    url: https://modis.gsfc.nasa.gov/data/dataprod/
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。様々な大気物理量を提供
+  - id: modis_land
+    name: MODIS Land Products
+    description: 地表面温度、植生指数（NDVI/EVI）、土地被覆、アルベド等の陸域プロダクト
+    tags:
+      - satellite
+      - modis
+      - land
+      - ndvi
+      - temperature
+      - vegetation
+      - global
+    url: https://modis.gsfc.nasa.gov/data/dataprod/
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。植生監視、土地利用変化解析に最適
+  - id: modis_ocean
+    name: MODIS Ocean Products
+    description: 海面温度、クロロフィル濃度、海色、一次生産力等の海洋関連プロダクト
+    tags:
+      - satellite
+      - modis
+      - ocean
+      - sst
+      - chlorophyll
+      - global
+    url: https://modis.gsfc.nasa.gov/data/dataprod/
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。海洋環境監視に必須のデータセット

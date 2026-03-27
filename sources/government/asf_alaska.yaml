@@ -1,0 +1,57 @@
+source:
+  id: asf_alaska
+  name: Alaska Satellite Facility (ASF)
+  url: https://asf.alaska.edu
+  description: NASA DAACs（分散型アクティブアーカイブセンター）の一つ。SAR（合成開口レーダー）データの配信・処理サービスを提供
+  provider: NASA/University of Alaska Fairbanks
+  category: government
+  formats:
+    - geotiff
+    - netcdf
+    - hdf5
+datasets:
+  - id: asf_sentinel1
+    name: Sentinel-1 SAR Data
+    description: ESA Sentinel-1 C帯域SAR衛星データ。地表変位、海氷監視、災害監視等に利用
+    tags:
+      - satellite
+      - sar
+      - radar
+      - sentinel
+      - esa
+      - global
+      - deformation
+    url: https://search.asf.alaska.edu
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。EarthdataアカウントでアクセスAPI利用も可能
+  - id: asf_alos_palsar
+    name: ALOS PALSAR/PALSAR-2
+    description: JAXA ALOS衛星のL帯域SARデータ。森林監視、地表変位解析に適用
+    tags:
+      - satellite
+      - sar
+      - radar
+      - alos
+      - jaxa
+      - forest
+      - deformation
+    url: https://search.asf.alaska.edu
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。EarthdataアカウントでアクセスAPI利用も可能
+  - id: asf_nisar
+    name: NISAR (NASA-ISRO SAR)
+    description: NASA-ISROの共同SAR衛星データ。L帯とS帯のデュアル周波数SAR
+    tags:
+      - satellite
+      - sar
+      - radar
+      - nisar
+      - nasa
+      - isro
+      - dual_frequency
+    url: https://search.asf.alaska.edu
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。10万以上のデータプロダクトが利用可能

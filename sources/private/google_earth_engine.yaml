@@ -1,0 +1,55 @@
+source:
+  id: google_earth_engine
+  name: Google Earth Engine
+  url: https://earthengine.google.com
+  description: 惑星規模の地球科学データ分析プラットフォーム。30年以上の衛星画像と地理空間データセットのマルチペタバイトカタログを提供
+  provider: Google
+  category: private
+  formats:
+    - geotiff
+    - netcdf
+    - api
+datasets:
+  - id: gee_landsat
+    name: Landsat Collection (via GEE)
+    description: Landsat 4, 5, 7, 8, 9の全データセット。40年以上の地球観測データ
+    tags:
+      - satellite
+      - optical
+      - multispectral
+      - time_series
+      - global
+      - landsat
+    url: https://earthengine.google.com/datasets/?tags=landsat
+    last_confirmed: 2026-03-27
+    access_method: api
+    notes: 学術・研究利用は無料。商用利用は有料
+  - id: gee_sentinel2
+    name: Sentinel-2 MSI (via GEE)
+    description: ESA Sentinel-2マルチスペクトル画像。10mから60mの空間解像度
+    tags:
+      - satellite
+      - optical
+      - multispectral
+      - sentinel
+      - esa
+      - global
+    url: https://earthengine.google.com/datasets/?tags=sentinel2
+    last_confirmed: 2026-03-27
+    access_method: api
+    notes: 学術・研究利用は無料。商用利用は有料
+  - id: gee_modis
+    name: MODIS (via GEE)
+    description: MODIS Terra and Aqua衛星データ。陸域、海洋、大気の各種プロダクト
+    tags:
+      - satellite
+      - modis
+      - nasa
+      - global
+      - atmosphere
+      - land
+      - ocean
+    url: https://earthengine.google.com/datasets/?tags=modis
+    last_confirmed: 2026-03-27
+    access_method: api
+    notes: 学術・研究利用は無料。商用利用は有料

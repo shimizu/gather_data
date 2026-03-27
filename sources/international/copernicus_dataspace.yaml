@@ -1,0 +1,58 @@
+source:
+  id: copernicus_dataspace
+  name: Copernicus Data Space Ecosystem
+  url: https://dataspace.copernicus.eu
+  description: 欧州宇宙機関（ESA）のCopernicusプログラムの公式データポータル。Sentinelシリーズ全衛星のデータを無料提供
+  provider: ESA (European Space Agency)
+  category: international
+  formats:
+    - geotiff
+    - netcdf
+    - zip
+    - safe
+datasets:
+  - id: copernicus_sentinel2
+    name: Sentinel-2 Multi-Spectral Instrument (MSI)
+    description: 光学マルチスペクトル衛星データ。10m、20m、60mの空間解像度で13バンド
+    tags:
+      - satellite
+      - optical
+      - multispectral
+      - sentinel
+      - esa
+      - global
+      - agriculture
+    url: https://browser.dataspace.copernicus.eu
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。ユーザー登録で無制限アクセス。API利用も可能
+  - id: copernicus_sentinel1
+    name: Sentinel-1 SAR
+    description: C帯域合成開口レーダー衛星データ。全天候型の地表観測
+    tags:
+      - satellite
+      - sar
+      - radar
+      - sentinel
+      - esa
+      - global
+      - interferometry
+    url: https://browser.dataspace.copernicus.eu
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。干渉SAR解析、地表変位監視に最適
+  - id: copernicus_sentinel3
+    name: Sentinel-3 OLCI/SLSTR
+    description: 海色監視・陸域監視衛星データ。海面温度、クロロフィル、火災検知等
+    tags:
+      - satellite
+      - ocean_color
+      - land_surface
+      - sentinel
+      - esa
+      - global
+      - fire
+    url: https://browser.dataspace.copernicus.eu
+    last_confirmed: 2026-03-27
+    access_method: download
+    notes: 完全無料。海洋・陸域環境監視に特化
