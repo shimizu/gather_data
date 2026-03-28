@@ -1,4 +1,4 @@
-# gather-data
+# gather-data-catalog
 
 AIエージェントがWebを検索してデータソースを発見し、ローカルのカタログに自動登録するCLIツール。
 
@@ -8,7 +8,7 @@ AIエージェントがWebを検索してデータソースを発見し、ロー
 
 収集したデータカタログを一覧にしたページ
 
-https://shimizu.github.io/gather_data/
+https://shimizu.github.io/gather_data_catalog/
 
 
 ## セットアップ
