@@ -1,0 +1,39 @@
+source:
+  id: usgs_earthquake
+  name: USGS Earthquake Hazards Program
+  url: https://earthquake.usgs.gov/
+  description: 米国地質調査所による全世界の地震データリアルタイム配信システム。GeoJSON、KML、CSV、QuakeMLなど複数形式で地震データを提供。
+  provider: U.S. Geological Survey (USGS)
+  category: government
+  formats:
+    - geojson
+    - csv
+    - kml
+    - atom
+    - quakeml
+datasets:
+  - id: usgs_realtime_feeds
+    name: Real-time Earthquake Feeds
+    description: 過去1時間から30日間の地震データをマグニチュード別に提供。M1.0+、M2.5+、M4.5+、顕著な地震等のカテゴリに分類。
+    tags:
+      - 地震
+      - リアルタイム
+      - 世界
+      - API
+      - geojson
+    url: https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
+    last_confirmed: 2026-04-01
+    access_method: api
+    notes: 毎分更新される高頻度リアルタイムデータ。開発者向けAPIドキュメント完備。
+  - id: usgs_earthquake_catalog
+    name: Earthquake Catalog API
+    description: 過去の地震データを検索・取得できるAPI。地域、時間、マグニチュード等の条件指定が可能。
+    tags:
+      - 地震
+      - 過去データ
+      - API
+      - 検索
+    url: https://earthquake.usgs.gov/fdsnws/event/1/
+    last_confirmed: 2026-04-01
+    access_method: api
+    notes: FDSN Web Service仕様に準拠。大量の履歴データアクセスが可能。

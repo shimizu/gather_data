@@ -1,0 +1,24 @@
+source:
+  id: fai_india
+  name: Fertiliser Association of India (FAI)
+  url: https://www.faidelhi.org/
+  description: インド肥料協会。インドの肥料産業統計、政策情報、市場動向を提供
+  provider: Fertiliser Association of India
+  category: private
+  formats:
+    - pdf
+    - excel
+datasets:
+  - id: fai_statistics
+    name: FAI India Fertilizer Statistics
+    description: インドの肥料生産・消費・輸出入統計。アジア最大の肥料市場の詳細データ
+    tags:
+      - 肥料
+      - インド
+      - アジア
+      - 輸出入
+      - 市場統計
+    url: https://www.faidelhi.org/
+    last_confirmed: 2026-03-18
+    access_method: download
+    notes: 年次レポート、統計資料を定期発行。インドのアジア域内貿易データも含む

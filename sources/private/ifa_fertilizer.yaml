@@ -1,0 +1,24 @@
+source:
+  id: ifa_fertilizer
+  name: International Fertilizer Association (IFA)
+  url: https://www.fertilizer.org/
+  description: 国際肥料協会。世界の肥料産業統計、市場動向、持続可能性に関する情報を提供
+  provider: International Fertilizer Association
+  category: private
+  formats:
+    - pdf
+    - excel
+datasets:
+  - id: ifa_statistics
+    name: IFA Statistics and Market Reports
+    description: 世界の肥料生産、消費、貿易統計。地域別（アジア含む）の詳細分析レポート
+    tags:
+      - 肥料
+      - 市場統計
+      - アジア
+      - 生産量
+      - 産業動向
+    url: https://www.fertilizer.org/
+    last_confirmed: 2026-03-18
+    access_method: download
+    notes: IFASTAT統計データベースあり。会員向け詳細レポートも提供

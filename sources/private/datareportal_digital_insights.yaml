@@ -1,0 +1,38 @@
+source:
+  id: datareportal_digital_insights
+  name: DataReportal - Global Digital Insights
+  url: https://datareportal.com/
+  description: 世界各国のデジタル利用状況に関する包括的な統計データとインサイトを提供。インターネット利用者数、ソーシャルメディア利用統計、モバイル普及率、Eコマース動向など、グローバルなデジタル指標を定期的に更新
+  provider: Kepios & We Are Social
+  category: private
+  formats:
+    - html
+    - pdf
+    - interactive
+datasets:
+  - id: digital_global_overview_2026
+    name: Digital 2026 Global Overview Report
+    description: 2026年のグローバルデジタル統計概要。世界60.4億人のインターネットユーザー（人口の73.2%）、56.6億のソーシャルメディアユーザー、57.8億のモバイルユーザーなどの最新統計
+    tags:
+      - インターネット利用者
+      - ソーシャルメディア
+      - モバイル
+      - デジタル統計
+      - グローバル
+    url: https://datareportal.com/global-digital-overview
+    last_confirmed: 2026-03-18
+    access_method: scrape
+    notes: 700スライド以上の包括的レポート。年次および月次の成長率データを含む
+  - id: digital_country_reports_2026
+    name: Digital 2026 Country Reports
+    description: 各国別のデジタル利用統計レポートシリーズ。インターネット利用、ソーシャルメディア利用、モバイル利用の詳細統計を国別に提供
+    tags:
+      - 国別統計
+      - インターネット
+      - ソーシャルメディア
+      - モバイル
+      - 地域分析
+    url: https://datareportal.com/reports
+    last_confirmed: 2026-03-18
+    access_method: scrape
+    notes: 世界各国の個別レポートが利用可能。アフリカ、アジア、ヨーロッパ、南北アメリカなど全地域をカバー

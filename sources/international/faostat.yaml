@@ -1,0 +1,38 @@
+source:
+  id: faostat
+  name: FAOSTAT - Food and Agriculture Organization Statistics
+  url: https://www.fao.org/faostat/en/
+  description: FAOの統計データベース。農業生産、貿易、食料需給、肥料消費などのデータを提供
+  provider: Food and Agriculture Organization of the United Nations (FAO)
+  category: international
+  formats:
+    - csv
+    - json
+    - api
+datasets:
+  - id: faostat_fertilizers_trade
+    name: FAOSTAT Fertilizers Trade Statistics
+    description: 世界各国の肥料貿易統計（輸出入量、価格等）。アジア諸国のデータも含む
+    tags:
+      - 肥料
+      - 貿易
+      - 輸出入
+      - アジア
+      - 農業
+    url: https://www.fao.org/faostat/en/#data/RT
+    last_confirmed: 2026-03-18
+    access_method: api
+    notes: Fertilizers section (HS Code 31)のデータが利用可能。国別・年別の詳細統計
+  - id: faostat_fertilizers_consumption
+    name: FAOSTAT Fertilizers Consumption Statistics
+    description: 世界各国の肥料消費統計（N、P、K別消費量等）
+    tags:
+      - 肥料
+      - 消費量
+      - アジア
+      - 農業
+      - 持続可能性
+    url: https://www.fao.org/faostat/en/#data/RFN
+    last_confirmed: 2026-03-18
+    access_method: api
+    notes: 肥料栄養素（窒素、リン、カリウム）別の消費統計

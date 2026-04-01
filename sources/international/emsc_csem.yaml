@@ -1,0 +1,37 @@
+source:
+  id: emsc_csem
+  name: European-Mediterranean Seismological Centre (EMSC)
+  url: https://www.emsc-csem.org/
+  description: ヨーロッパ・地中海地震学センター。70以上の加盟機関による国際非営利NGO。リアルタイム地震情報と市民地震学データを提供。
+  provider: European-Mediterranean Seismological Centre
+  category: international
+  formats:
+    - json
+    - xml
+    - rss
+datasets:
+  - id: emsc_realtime_earthquakes
+    name: Latest Earthquakes
+    description: ヨーロッパ・地中海地域および世界の最新地震情報。リアルタイムで更新される地震データ。
+    tags:
+      - 地震
+      - リアルタイム
+      - ヨーロッパ
+      - 地中海
+      - 世界
+    url: https://www.emsc-csem.org/Earthquake/
+    last_confirmed: 2026-04-01
+    access_method: scrape
+    notes: ヨーロッパ・地中海でM4.5以上、世界でM5.5以上を重点的に監視。
+  - id: emsc_lastquake
+    name: LastQuake
+    description: 市民地震学プラットフォーム。地震体感情報とソーシャルメディアデータを統合した地震情報システム。
+    tags:
+      - 市民地震学
+      - 体感情報
+      - ソーシャル
+      - アプリ
+    url: https://www.emsc-csem.org/service/app/
+    last_confirmed: 2026-04-01
+    access_method: api
+    notes: AndroidとiOSアプリ提供。地震の体感報告をクラウドソーシング。

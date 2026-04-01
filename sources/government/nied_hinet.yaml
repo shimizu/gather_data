@@ -1,0 +1,50 @@
+source:
+  id: nied_hinet
+  name: NIED Hi-net (High Sensitivity Seismograph Network Japan)
+  url: https://www.hinet.bosai.go.jp/
+  description: 国立研究開発法人防災科学技術研究所による日本の高感度地震観測網。地震波形データ、震源カタログ、発震機構解等を提供。
+  provider: National Research Institute for Earth Science and Disaster Resilience (NIED)
+  category: government
+  formats:
+    - win
+    - sac
+    - catalog
+    - csv
+datasets:
+  - id: hinet_continuous_waveform
+    name: Continuous Waveform Data
+    description: Hi-net観測網による連続地震波形データ。要ユーザー登録。WIN形式で提供される高品質な地震観測データ。
+    tags:
+      - 地震波形
+      - 日本
+      - 連続データ
+      - 高感度
+      - 観測網
+    url: https://www.hinet.bosai.go.jp/
+    last_confirmed: 2026-04-01
+    access_method: download
+    notes: ユーザー登録必須。研究利用時の結果報告義務あり。
+  - id: hinet_earthquake_catalog
+    name: Preliminary Earthquake Catalog
+    description: Hi-net自動処理システムによる地震カタログ。震源時刻、位置、マグニチュード等を3時間毎更新。
+    tags:
+      - 地震カタログ
+      - 日本
+      - 震源
+      - 自動処理
+    url: https://www.hinet.bosai.go.jp/
+    last_confirmed: 2026-04-01
+    access_method: download
+    notes: ユーザー登録必要。3時間毎自動更新。
+  - id: hinet_focal_mechanism
+    name: Focal Mechanism Catalog
+    description: AQUAシステムによる発震機構解カタログ。地震の断層運動様式を解析したデータを提供。
+    tags:
+      - 発震機構
+      - 断層
+      - AQUA
+      - 日本
+    url: https://www.hinet.bosai.go.jp/AQUA/aqua_catalogue.php
+    last_confirmed: 2026-04-01
+    access_method: download
+    notes: AQUA（Automatic Quality control system for seismic data）による自動解析結果。

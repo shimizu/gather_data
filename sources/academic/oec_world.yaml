@@ -1,0 +1,25 @@
+source:
+  id: oec_world
+  name: Observatory of Economic Complexity (OEC)
+  url: https://oec.world/
+  description: 経済複雑性観測所。世界の貿易データを詳細に可視化・分析できるプラットフォーム
+  provider: Collective Learning group at MIT
+  category: academic
+  formats:
+    - json
+    - api
+    - csv
+datasets:
+  - id: oec_fertilizers_trade
+    name: OEC Fertilizers Trade Data
+    description: HS Code 31（肥料）の世界貿易データ。国別・製品別の詳細な輸出入統計とビジュアライゼーション
+    tags:
+      - 肥料
+      - 貿易
+      - HS分類
+      - アジア
+      - 可視化
+    url: https://oec.world/en/profile/hs/fertilizers
+    last_confirmed: 2026-03-18
+    access_method: api
+    notes: インタラクティブな可視化機能あり。アジア各国の肥料貿易パターンを分析可能

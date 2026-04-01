@@ -1,0 +1,25 @@
+source:
+  id: wits
+  name: World Integrated Trade Solution (WITS)
+  url: https://wits.worldbank.org/
+  description: 世界銀行が提供する国際商品貿易、関税、非関税措置データベース。国別の輸出入統計、関税統計、開発データを提供。
+  provider: World Bank
+  category: international
+  formats:
+    - csv
+    - excel
+    - api
+datasets:
+  - id: wits_trade_data
+    name: International Merchandise Trade Statistics
+    description: 国別・商品別の国際貿易統計データ。HS6桁レベルの詳細な輸出入データ、貿易相手国情報を含む。
+    tags:
+      - 貿易統計
+      - 輸出入
+      - HS分類
+      - 関税
+      - World Bank
+    url: https://wits.worldbank.org/
+    last_confirmed: 2026-03-18
+    access_method: api
+    notes: 要登録。カスタムクエリ機能あり。Iran含む全世界の貿易データが利用可能。

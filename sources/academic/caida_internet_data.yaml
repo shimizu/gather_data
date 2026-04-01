@@ -1,0 +1,26 @@
+source:
+  id: caida_internet_data
+  name: CAIDA - Center for Applied Internet Data Analysis
+  url: https://www.caida.org/
+  description: インターネットの測定、モデリング、視覚化に特化した研究機関。インターネットトポロジー、BGPルーティング、AS（自律システム）レベルの接続性、インターネット測定データなど、インターネットインフラの分析に必要な包括的なデータセットを提供
+  provider: UC San Diego - CAIDA
+  category: academic
+  formats:
+    - raw
+    - xml
+    - json
+    - csv
+datasets:
+  - id: caida_resource_catalog
+    name: CAIDA Resource Catalog
+    description: CAIDAが提供するインターネット測定データとリソースの総合カタログ。トポロジーデータ、測定ツール、分析結果などを体系化
+    tags:
+      - インターネット測定
+      - トポロジー
+      - BGP
+      - AS関係
+      - ルーティング
+    url: https://www.caida.org/catalog/datasets/
+    last_confirmed: 2026-03-18
+    access_method: download
+    notes: インターネット研究者向けの専門的データセット。多くのデータセットはアカデミック利用が前提

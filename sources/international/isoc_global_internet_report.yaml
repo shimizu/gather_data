@@ -1,0 +1,48 @@
+source:
+  id: isoc_global_internet_report
+  name: Internet Society Global Internet Report
+  url: https://www.internetsociety.org/globalinternetreport/
+  description: インターネットの進化に関する包括的な分析レポートシリーズ。インターネット経済の統合、デジタル未来への道筋、信頼の構築、モバイルの進化、オープンで持続可能なアクセスなどをテーマに、グローバルなインターネットの状況を詳細に分析
+  provider: Internet Society (ISOC)
+  category: international
+  formats:
+    - pdf
+    - html
+datasets:
+  - id: gir_2019_consolidation
+    name: "Global Internet Report 2019: Consolidation in the Internet Economy"
+    description: インターネット経済における統合トレンドの分析。Facebook、Google、Amazonなどの主要プラットフォームの支配力とその影響を5つの主要テーマで検証
+    tags:
+      - インターネット経済
+      - 統合
+      - プラットフォーム
+      - 競争
+      - ガバナンス
+    url: https://www.internetsociety.org/globalinternetreport/2019/
+    last_confirmed: 2026-03-18
+    access_method: download
+    notes: トータルサービス環境、相互運用性、インターネットトポロジーの変化、深い依存性、統合への対応について分析
+  - id: gir_2017_digital_future
+    name: "Global Internet Report 2017: Paths to Our Digital Future"
+    description: デジタル未来への道筋に関する分析レポート。次世代のためのインターネット形成について
+    tags:
+      - デジタル未来
+      - オープンインターネット
+      - グローバル接続
+      - セキュリティ
+    url: https://www.internetsociety.org/globalinternetreport/2017/
+    last_confirmed: 2026-03-18
+    access_method: download
+    notes: インターネットの基本価値の保護とオープン性の維持に焦点
+  - id: gir_2016_trust_online
+    name: "Global Internet Report 2016: The Economics of Building Trust Online"
+    description: オンラインでの信頼構築の経済学。データ漏洩防止に関する経済的観点からの分析
+    tags:
+      - オンライン信頼
+      - データ漏洩
+      - サイバーセキュリティ
+      - 経済分析
+    url: https://www.internetsociety.org/globalinternetreport/2016/
+    last_confirmed: 2026-03-18
+    access_method: download
+    notes: 大規模データ漏洩の経済的影響と5つの明確な推奨事項を提供

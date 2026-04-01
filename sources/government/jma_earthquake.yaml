@@ -1,0 +1,74 @@
+source:
+  id: jma_earthquake
+  name: 気象庁地震火山部
+  url: https://www.data.jma.go.jp/svd/eqev/data/
+  description: 気象庁による日本の地震観測・解析データの公式提供サイト。地震情報、震度データベース、震源リスト等を提供。
+  provider: Japan Meteorological Agency (JMA)
+  category: government
+  formats:
+    - csv
+    - pdf
+    - xml
+datasets:
+  - id: jma_earthquake_info
+    name: 震源に関する情報・地震情報
+    description: 震度1以上を観測した地震について、震源地、マグニチュード、各地の震度を発表。リアルタイム更新。
+    tags:
+      - 地震情報
+      - 日本
+      - 震度
+      - 震源
+      - リアルタイム
+    url: https://www.jma.go.jp/bosai/forecast/
+    last_confirmed: 2026-04-01
+    access_method: scrape
+    notes: 防災情報として即時発表される公式地震情報。
+  - id: jma_seismic_intensity_db
+    name: 震度データベース検索
+    description: 1919年から現在まで、震度1以上を観測した地震を県別・観測点別に検索可能なデータベース。
+    tags:
+      - 震度
+      - 過去データ
+      - 検索
+      - 日本
+      - 長期間
+    url: https://www.data.jma.go.jp/svd/eqdb/data/shindo/
+    last_confirmed: 2026-04-01
+    access_method: scrape
+    notes: 1919年からの長期間データ。県別・観測点別の詳細検索が可能。
+  - id: jma_hypocenter_list
+    name: 震源リスト・震央分布図
+    description: 日別の震源リスト（CSV形式）と震央分布図。2日前までのデータを日別掲載。
+    tags:
+      - 震源リスト
+      - 震央分布
+      - 日本
+      - CSV
+    url: https://www.data.jma.go.jp/svd/eqev/data/daily_map/
+    last_confirmed: 2026-04-01
+    access_method: download
+    notes: CSV形式での震源データダウンロード可能。
+  - id: jma_earthquake_monthly
+    name: 地震月報（カタログ編）
+    description: 震源、検測値、発震機構、震度、津波、ひずみデータの月別まとめ。品質確認済みの確定データ。
+    tags:
+      - 月報
+      - 確定データ
+      - 震源
+      - 発震機構
+    url: https://www.data.jma.go.jp/svd/eqev/data/bulletin/
+    last_confirmed: 2026-04-01
+    access_method: download
+    notes: 精査された確定値データ。研究用途に適している。
+  - id: jma_focal_mechanism
+    name: 発震機構解
+    description: 主な地震の発震機構解データ。地震を起こした断層の動きを解析した資料。
+    tags:
+      - 発震機構
+      - 断層
+      - メカニズム
+      - 日本
+    url: https://www.data.jma.go.jp/svd/eqev/data/mech/
+    last_confirmed: 2026-04-01
+    access_method: download
+    notes: 国内外の主要地震について解析結果を提供。

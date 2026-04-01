@@ -1,0 +1,24 @@
+source:
+  id: maff_japan_trade
+  name: 農林水産省農林水産物輸出入統計
+  url: https://www.maff.go.jp/j/tokei/kouhyou/kokusai/index.html
+  description: 日本の農林水産物輸出入統計。肥料を含む農業関連物資の貿易データ
+  provider: 農林水産省
+  category: government
+  formats:
+    - excel
+    - pdf
+datasets:
+  - id: maff_fertilizer_trade
+    name: 日本の肥料貿易統計
+    description: 日本とアジア諸国間の肥料輸出入統計。品目別・相手国別の詳細データ
+    tags:
+      - 肥料
+      - 日本
+      - アジア
+      - 貿易統計
+      - 輸出入
+    url: https://www.maff.go.jp/j/tokei/kouhyou/kokusai/index.html
+    last_confirmed: 2026-03-18
+    access_method: download
+    notes: 月別・年別データあり。e-Statからも入手可能

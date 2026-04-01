@@ -1,0 +1,50 @@
+source:
+  id: isc_seismology
+  name: International Seismological Centre (ISC)
+  url: https://www.isc.ac.uk/
+  description: 国際地震学センター。世界中の150以上の機関から地震データを収集し、ISC Bulletinとして包括的な地震カタログを提供。
+  provider: International Seismological Centre
+  category: international
+  formats:
+    - csv
+    - quakeml
+    - isf
+datasets:
+  - id: isc_bulletin
+    name: ISC Bulletin
+    description: 地球の地震活動の決定版記録とされる包括的地震データベース。震源、震度、発震機構解等を含む高品質データ。
+    tags:
+      - 地震
+      - 世界
+      - 包括的
+      - 震源
+      - 高品質
+    url: https://www.isc.ac.uk/iscbulletin/search/catalogue/
+    last_confirmed: 2026-04-01
+    access_method: download
+    notes: 150以上の機関からのデータを統合。レビュー済みデータは24ヶ月遅れで公開。
+  - id: isc_gem_catalog
+    name: ISC-GEM Catalogue
+    description: 全地球規模の地震目録。1900年以降の M≥5.5 の地震について均一な震源パラメータを提供。
+    tags:
+      - 地震カタログ
+      - 世界
+      - 歴史データ
+      - マグニチュード
+      - 均一
+    url: https://www.isc.ac.uk/iscgem/
+    last_confirmed: 2026-04-01
+    access_method: download
+    notes: 1900年以降の大地震の統一データベース。研究用途に最適化。
+  - id: isc_fdsn_service
+    name: ISC FDSN Event Web Service
+    description: FDSN標準に準拠したWeb Service API。プログラム的なデータアクセスを提供。
+    tags:
+      - API
+      - FDSN
+      - web service
+      - プログラム
+    url: https://www.isc.ac.uk/fdsnws/event/1/
+    last_confirmed: 2026-04-01
+    access_method: api
+    notes: FDSN標準準拠。QuakeML形式でのデータ取得が可能。
